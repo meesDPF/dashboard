@@ -6,30 +6,38 @@
 <title>DePrefabriek — Opvolgsnelheid</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <style>
-:root { --primary: #1a365d; --secondary: #2563eb; --accent: #10b981; --bg: #f8fafc; --card: #ffffff; }
+:root { --orange: #F26522; --dark: #1a1a1a; --gray: #f2f2f2; --card: #ffffff; --text: #222222; }
 * { box-sizing: border-box; margin: 0; padding: 0; }
-body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: #1e293b; line-height: 1.6; }
-.container { max-width: 1200px; margin: 0 auto; padding: 2rem; }
-header { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; padding: 1.75rem 2rem; border-radius: 1rem; margin-bottom: 2rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; }
-header h1 { font-size: 1.5rem; }
-header p { opacity: 0.85; font-size: 0.875rem; margin-top: 0.2rem; }
-.meta { font-size: 0.75rem; opacity: 0.7; margin-top: 0.4rem; }
-.toggle { display: flex; background: rgba(255,255,255,0.15); border-radius: 0.5rem; overflow: hidden; }
-.toggle button { padding: 0.5rem 1.25rem; border: none; background: transparent; color: white; font-size: 0.875rem; font-weight: 600; cursor: pointer; transition: background 0.15s; }
-.toggle button.active { background: rgba(255,255,255,0.3); }
-.chart-card { background: var(--card); padding: 1.5rem; border-radius: 0.75rem; box-shadow: 0 1px 3px rgba(0,0,0,0.1); margin-bottom: 1.5rem; }
-.chart-card h2 { font-size: 1rem; font-weight: 600; margin-bottom: 1.25rem; color: var(--primary); }
-.chart-card canvas { max-height: 320px; }
-footer { text-align: center; padding: 1.5rem; color: #94a3b8; font-size: 0.8rem; }
+html, body { height: 100%; }
+body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--gray); color: var(--text); line-height: 1.5; font-size: 18px; }
+.container { width: 100%; height: 100vh; display: flex; flex-direction: column; padding: 1.5rem 2rem; gap: 1rem; }
+header { background: var(--dark); color: white; padding: 1.25rem 2rem; border-radius: 0.75rem; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
+.header-left { display: flex; align-items: center; gap: 1.5rem; }
+.logo-mark { background: var(--orange); color: white; font-weight: 900; font-size: 1rem; padding: 0.4rem 0.75rem; border-radius: 0.4rem; letter-spacing: 0.05em; text-transform: uppercase; }
+header h1 { font-size: 1.4rem; font-weight: 700; }
+header p { opacity: 0.6; font-size: 0.8rem; margin-top: 0.15rem; }
+.meta { font-size: 0.7rem; opacity: 0.5; margin-top: 0.2rem; }
+.toggle { display: flex; background: rgba(255,255,255,0.1); border-radius: 0.4rem; overflow: hidden; border: 1px solid rgba(255,255,255,0.15); }
+.toggle button { padding: 0.5rem 1.25rem; border: none; background: transparent; color: white; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: background 0.15s; }
+.toggle button.active { background: var(--orange); }
+.charts { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; flex: 1; min-height: 0; }
+.chart-card { background: var(--card); padding: 1.5rem; border-radius: 0.75rem; box-shadow: 0 1px 4px rgba(0,0,0,0.08); display: flex; flex-direction: column; }
+.chart-card h2 { font-size: 1rem; font-weight: 700; margin-bottom: 1rem; color: var(--dark); border-left: 4px solid var(--orange); padding-left: 0.75rem; flex-shrink: 0; }
+.chart-card .chart-wrap { flex: 1; min-height: 0; position: relative; }
+.chart-card canvas { position: absolute; top: 0; left: 0; width: 100% !important; height: 100% !important; }
+footer { text-align: center; color: #aaa; font-size: 0.7rem; flex-shrink: 0; padding: 0.25rem; }
 </style>
 </head>
 <body>
 <div class="container">
 <header>
-  <div>
-    <h1>Opvolgsnelheid nieuwe leads</h1>
-    <p>Alleen leads waarbij minimaal 1 keer is nagebeld</p>
-    <p class="meta">Bijgewerkt op 11 June 2026, 16:49 &nbsp;·&nbsp; 10,861 leads &nbsp;·&nbsp; 5,249 nagebeld</p>
+  <div class="header-left">
+    <div class="logo-mark">DPF</div>
+    <div>
+      <h1>Opvolgsnelheid nieuwe leads</h1>
+      <p>Alleen leads waarbij minimaal 1 keer is nagebeld &nbsp;·&nbsp; 10,861 leads &nbsp;·&nbsp; 5,249 nagebeld</p>
+      <p class="meta">Bijgewerkt op 11 June 2026, 20:07</p>
+    </div>
   </div>
   <div class="toggle">
     <button id="btnMonth" class="active" onclick="setView('month')">Per maand</button>
@@ -37,17 +45,18 @@ footer { text-align: center; padding: 1.5rem; color: #94a3b8; font-size: 0.8rem;
   </div>
 </header>
 
-<div class="chart-card">
-  <h2>Gemiddeld aantal dagen tussen binnenkomst lead en eerste belpoging</h2>
-  <canvas id="avgDaysChart"></canvas>
+<div class="charts">
+  <div class="chart-card">
+    <h2>Gemiddeld aantal dagen tot eerste belpoging</h2>
+    <div class="chart-wrap"><canvas id="avgDaysChart"></canvas></div>
+  </div>
+  <div class="chart-card">
+    <h2>Contactresultaat per periode (% van nagebelde leads)</h2>
+    <div class="chart-wrap"><canvas id="attemptsChart"></canvas></div>
+  </div>
 </div>
 
-<div class="chart-card">
-  <h2>Contactresultaat per periode (% van nagebelde leads)</h2>
-  <canvas id="attemptsChart"></canvas>
-</div>
-
-<footer>Bron: crm_export.csv &nbsp;·&nbsp; Gegenereerd op 11 June 2026, 16:49</footer>
+<footer>Bron: crm_export.csv &nbsp;·&nbsp; 11 June 2026, 20:07</footer>
 </div>
 
 <script>
@@ -71,7 +80,7 @@ function buildCharts(data) {
       datasets: [{
         label: 'Gem. dagen',
         data: extract(data, 'avg_days'),
-        borderColor: '#2563eb', backgroundColor: '#2563eb18',
+        borderColor: '#F26522', backgroundColor: '#F2652218',
         fill: true, tension: 0.3,
         pointRadius: data.length <= 30 ? 4 : 2, pointHoverRadius: 6
       }]
@@ -79,6 +88,7 @@ function buildCharts(data) {
     options: {
       responsive: true,
       plugins: { legend: { display: false }, tooltip: { callbacks: { label: c => ` ${c.parsed.y} dagen` } } },
+      maintainAspectRatio: false,
       scales: { x: { ticks: { callback: function(val, i) { return i % 2 === 0 ? this.getLabelForValue(val) : ''; }, maxRotation: 45, minRotation: 45 } }, y: { beginAtZero: true, title: { display: true, text: 'Dagen' } } }
     }
   });
@@ -88,14 +98,15 @@ function buildCharts(data) {
     data: {
       labels,
       datasets: [
-        { label: '1e poging',    data: extract(data,'p1'), backgroundColor: '#10b981cc', stack:'s' },
-        { label: '2e poging',    data: extract(data,'p2'), backgroundColor: '#f59e0bcc', stack:'s' },
-        { label: '3e poging',    data: extract(data,'p3'), backgroundColor: '#f97316cc', stack:'s' },
-        { label: 'Niet bereikt', data: extract(data,'pn'), backgroundColor: '#94a3b8cc', stack:'s' },
+        { label: '1e poging',    data: extract(data,'p1'), backgroundColor: '#F26522cc', stack:'s' },
+        { label: '2e poging',    data: extract(data,'p2'), backgroundColor: '#F2652288', stack:'s' },
+        { label: '3e poging',    data: extract(data,'p3'), backgroundColor: '#F2652255', stack:'s' },
+        { label: 'Niet bereikt', data: extract(data,'pn'), backgroundColor: '#cccccccc', stack:'s' },
       ]
     },
     options: {
       responsive: true,
+      maintainAspectRatio: false,
       plugins: {
         legend: { display: true, position: 'top' },
         tooltip: { callbacks: { label: c => ` ${c.dataset.label}: ${c.parsed.y}%` } }
