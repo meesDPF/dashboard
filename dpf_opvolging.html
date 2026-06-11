@@ -36,7 +36,7 @@ footer { text-align: center; color: #aaa; font-size: 0.7rem; flex-shrink: 0; pad
     <div>
       <h1>Opvolgsnelheid nieuwe leads</h1>
       <p>Alleen leads waarbij minimaal 1 keer is nagebeld &nbsp;·&nbsp; 10,861 leads &nbsp;·&nbsp; 5,249 nagebeld</p>
-      <p class="meta">Bijgewerkt op 11 June 2026, 20:07</p>
+      <p class="meta">Bijgewerkt op 11 June 2026, 20:11</p>
     </div>
   </div>
   <div class="toggle">
@@ -56,7 +56,7 @@ footer { text-align: center; color: #aaa; font-size: 0.7rem; flex-shrink: 0; pad
   </div>
 </div>
 
-<footer>Bron: crm_export.csv &nbsp;·&nbsp; 11 June 2026, 20:07</footer>
+<footer>Bron: crm_export.csv &nbsp;·&nbsp; 11 June 2026, 20:11</footer>
 </div>
 
 <script>
@@ -98,9 +98,9 @@ function buildCharts(data) {
     data: {
       labels,
       datasets: [
-        { label: '1e poging',    data: extract(data,'p1'), backgroundColor: '#F26522cc', stack:'s' },
-        { label: '2e poging',    data: extract(data,'p2'), backgroundColor: '#F2652288', stack:'s' },
-        { label: '3e poging',    data: extract(data,'p3'), backgroundColor: '#F2652255', stack:'s' },
+        { label: '1e poging',    data: extract(data,'p1'), backgroundColor: '#F26522', stack:'s' },
+        { label: '2e poging',    data: extract(data,'p2'), backgroundColor: '#F2652277', stack:'s' },
+        { label: '3e poging',    data: extract(data,'p3'), backgroundColor: '#F2652244', stack:'s' },
         { label: 'Niet bereikt', data: extract(data,'pn'), backgroundColor: '#cccccccc', stack:'s' },
       ]
     },
