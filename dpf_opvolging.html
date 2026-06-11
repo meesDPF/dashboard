@@ -29,7 +29,7 @@ footer { text-align: center; padding: 1.5rem; color: #94a3b8; font-size: 0.8rem;
   <div>
     <h1>Opvolgsnelheid nieuwe leads</h1>
     <p>Alleen leads waarbij minimaal 1 keer is nagebeld</p>
-    <p class="meta">Bijgewerkt op 11 June 2026, 16:45 &nbsp;·&nbsp; 10,861 leads &nbsp;·&nbsp; 5,249 nagebeld</p>
+    <p class="meta">Bijgewerkt op 11 June 2026, 16:49 &nbsp;·&nbsp; 10,861 leads &nbsp;·&nbsp; 5,249 nagebeld</p>
   </div>
   <div class="toggle">
     <button id="btnMonth" class="active" onclick="setView('month')">Per maand</button>
@@ -47,7 +47,7 @@ footer { text-align: center; padding: 1.5rem; color: #94a3b8; font-size: 0.8rem;
   <canvas id="attemptsChart"></canvas>
 </div>
 
-<footer>Bron: crm_export.csv &nbsp;·&nbsp; Gegenereerd op 11 June 2026, 16:45</footer>
+<footer>Bron: crm_export.csv &nbsp;·&nbsp; Gegenereerd op 11 June 2026, 16:49</footer>
 </div>
 
 <script>
@@ -79,7 +79,7 @@ function buildCharts(data) {
     options: {
       responsive: true,
       plugins: { legend: { display: false }, tooltip: { callbacks: { label: c => ` ${c.parsed.y} dagen` } } },
-      scales: { x: { ticks: { callback: function(val, i) { return i % 4 === 0 ? this.getLabelForValue(val) : ''; } } }, y: { beginAtZero: true, title: { display: true, text: 'Dagen' } } }
+      scales: { x: { ticks: { callback: function(val, i) { return i % 2 === 0 ? this.getLabelForValue(val) : ''; }, maxRotation: 45, minRotation: 45 } }, y: { beginAtZero: true, title: { display: true, text: 'Dagen' } } }
     }
   });
 
@@ -101,7 +101,7 @@ function buildCharts(data) {
         tooltip: { callbacks: { label: c => ` ${c.dataset.label}: ${c.parsed.y}%` } }
       },
       scales: {
-        x: { stacked: true, ticks: { callback: function(val, i) { return i % 4 === 0 ? this.getLabelForValue(val) : ''; } } },
+        x: { stacked: true, ticks: { callback: function(val, i) { return i % 2 === 0 ? this.getLabelForValue(val) : ''; }, maxRotation: 45, minRotation: 45 } },
         y: { stacked: true, max: 100, ticks: { callback: v => v + '%' } }
       }
     }
