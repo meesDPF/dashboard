@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DePrefabriek — Opvolgsnelheid</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+:root { --primary: #1a365d; --secondary: #2563eb; --accent: #10b981; --bg: #f8fafc; --card: #ffffff; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: #1e293b; line-height: 1.6; }
+.container { max-width: 1200px; margin: 0 auto; padding: 2rem; }
+header { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; padding: 1.75rem 2rem; border-radius: 1rem; margin-bottom: 2rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; }
+header h1 { font-size: 1.5rem; }
+header p { opacity: 0.85; font-size: 0.875rem; margin-top: 0.2rem; }
+.meta { font-size: 0.75rem; opacity: 0.7; margin-top: 0.4rem; }
+.toggle { display: flex; background: rgba(255,255,255,0.15); border-radius: 0.5rem; overflow: hidden; }
+.toggle button { padding: 0.5rem 1.25rem; border: none; background: transparent; color: white; font-size: 0.875rem; font-weight: 600; cursor: pointer; transition: background 0.15s; }
+.toggle button.active { background: rgba(255,255,255,0.3); }
+.chart-card { background: var(--card); padding: 1.5rem; border-radius: 0.75rem; box-shadow: 0 1px 3px rgba(0,0,0,0.1); margin-bottom: 1.5rem; }
+.chart-card h2 { font-size: 1rem; font-weight: 600; margin-bottom: 1.25rem; color: var(--primary); }
+.chart-card canvas { max-height: 320px; }
+footer { text-align: center; padding: 1.5rem; color: #94a3b8; font-size: 0.8rem; }
+</style>
+</head>
+<body>
+<div class="container">
+<header>
+  <div>
+    <h1>Opvolgsnelheid nieuwe leads</h1>
+    <p>Alleen leads waarbij minimaal 1 keer is nagebeld</p>
+    <p class="meta">Bijgewerkt op 11 June 2026, 16:24 &nbsp;·&nbsp; 10,861 leads &nbsp;·&nbsp; 5,249 nagebeld</p>
+  </div>
+  <div class="toggle">
+    <button id="btnMonth" class="active" onclick="setView('month')">Per maand</button>
+    <button id="btnWeek" onclick="setView('week')">Per week</button>
+  </div>
+</header>
+
+<div class="chart-card">
+  <h2>Gemiddeld aantal dagen tussen binnenkomst lead en eerste belpoging</h2>
+  <canvas id="avgDaysChart"></canvas>
+</div>
+
+<div class="chart-card">
+  <h2>Contactresultaat per periode (% van nagebelde leads)</h2>
+  <canvas id="attemptsChart"></canvas>
+</div>
+
+<footer>Bron: crm_export.csv &nbsp;·&nbsp; Gegenereerd op 11 June 2026, 16:24</footer>
+</div>
+
+<script>
+const MONTHLY = [{"label": "2024-07", "n": 188, "avg_days": 1.0, "p1": 41.0, "p2": 19.1, "p3": 3.2, "pn": 36.7}, {"label": "2024-08", "n": 129, "avg_days": 12.1, "p1": 42.6, "p2": 15.5, "p3": 3.1, "pn": 38.8}, {"label": "2024-09", "n": 227, "avg_days": 5.4, "p1": 42.7, "p2": 15.0, "p3": 3.1, "pn": 39.2}, {"label": "2024-10", "n": 271, "avg_days": 3.5, "p1": 42.4, "p2": 13.3, "p3": 4.4, "pn": 39.9}, {"label": "2024-11", "n": 197, "avg_days": 2.6, "p1": 37.1, "p2": 7.6, "p3": 7.1, "pn": 48.2}, {"label": "2024-12", "n": 172, "avg_days": 8.9, "p1": 43.0, "p2": 11.6, "p3": 5.8, "pn": 39.5}, {"label": "2025-01", "n": 250, "avg_days": 5.7, "p1": 52.4, "p2": 11.2, "p3": 1.2, "pn": 35.2}, {"label": "2025-02", "n": 226, "avg_days": 4.0, "p1": 43.8, "p2": 9.7, "p3": 0.4, "pn": 46.0}, {"label": "2025-03", "n": 225, "avg_days": 3.4, "p1": 43.1, "p2": 10.2, "p3": 2.2, "pn": 44.4}, {"label": "2025-04", "n": 173, "avg_days": 6.5, "p1": 48.0, "p2": 12.1, "p3": 3.5, "pn": 36.4}, {"label": "2025-05", "n": 151, "avg_days": 3.7, "p1": 47.0, "p2": 13.9, "p3": 6.0, "pn": 33.1}, {"label": "2025-06", "n": 148, "avg_days": 2.2, "p1": 49.3, "p2": 11.5, "p3": 2.0, "pn": 37.2}, {"label": "2025-07", "n": 147, "avg_days": 3.4, "p1": 45.6, "p2": 17.0, "p3": 3.4, "pn": 34.0}, {"label": "2025-08", "n": 142, "avg_days": 3.9, "p1": 43.7, "p2": 14.8, "p3": 8.5, "pn": 33.1}, {"label": "2025-09", "n": 247, "avg_days": 2.5, "p1": 42.5, "p2": 17.0, "p3": 6.5, "pn": 34.0}, {"label": "2025-10", "n": 340, "avg_days": 2.1, "p1": 41.2, "p2": 12.6, "p3": 5.3, "pn": 40.9}, {"label": "2025-11", "n": 375, "avg_days": 2.1, "p1": 42.7, "p2": 10.1, "p3": 3.5, "pn": 43.7}, {"label": "2025-12", "n": 456, "avg_days": 7.4, "p1": 32.0, "p2": 12.1, "p3": 3.1, "pn": 52.9}, {"label": "2026-01", "n": 438, "avg_days": 3.9, "p1": 32.4, "p2": 14.4, "p3": 3.0, "pn": 50.2}, {"label": "2026-02", "n": 199, "avg_days": 1.8, "p1": 47.2, "p2": 8.0, "p3": 4.5, "pn": 40.2}, {"label": "2026-03", "n": 171, "avg_days": 1.4, "p1": 53.2, "p2": 11.1, "p3": 4.1, "pn": 31.6}, {"label": "2026-04", "n": 154, "avg_days": 1.2, "p1": 50.6, "p2": 15.6, "p3": 1.9, "pn": 31.8}, {"label": "2026-05", "n": 135, "avg_days": 1.4, "p1": 49.6, "p2": 11.1, "p3": 1.5, "pn": 37.8}, {"label": "2026-06", "n": 52, "avg_days": 0.7, "p1": 57.7, "p2": 3.8, "p3": 0.0, "pn": 38.5}];
+const WEEKLY  = [{"label": "W17-25", "n": 42, "avg_days": 12.3, "p1": 42.9, "p2": 21.4, "p3": 2.4, "pn": 33.3}, {"label": "W18-25", "n": 27, "avg_days": 8.3, "p1": 55.6, "p2": 14.8, "p3": 3.7, "pn": 25.9}, {"label": "W19-25", "n": 55, "avg_days": 4.2, "p1": 40.0, "p2": 16.4, "p3": 3.6, "pn": 40.0}, {"label": "W20-25", "n": 45, "avg_days": 3.6, "p1": 57.8, "p2": 11.1, "p3": 6.7, "pn": 24.4}, {"label": "W21-25", "n": 24, "avg_days": 2.4, "p1": 50.0, "p2": 4.2, "p3": 12.5, "pn": 33.3}, {"label": "W22-25", "n": 23, "avg_days": 2.5, "p1": 39.1, "p2": 21.7, "p3": 4.3, "pn": 34.8}, {"label": "W23-25", "n": 32, "avg_days": 2.5, "p1": 50.0, "p2": 18.8, "p3": 3.1, "pn": 28.1}, {"label": "W24-25", "n": 32, "avg_days": 1.7, "p1": 56.2, "p2": 6.2, "p3": 0.0, "pn": 37.5}, {"label": "W25-25", "n": 38, "avg_days": 2.3, "p1": 50.0, "p2": 5.3, "p3": 5.3, "pn": 39.5}, {"label": "W26-25", "n": 39, "avg_days": 2.5, "p1": 41.0, "p2": 17.9, "p3": 0.0, "pn": 41.0}, {"label": "W27-25", "n": 23, "avg_days": 1.5, "p1": 56.5, "p2": 21.7, "p3": 0.0, "pn": 21.7}, {"label": "W28-25", "n": 41, "avg_days": 2.0, "p1": 41.5, "p2": 22.0, "p3": 2.4, "pn": 34.1}, {"label": "W29-25", "n": 31, "avg_days": 2.4, "p1": 45.2, "p2": 16.1, "p3": 0.0, "pn": 38.7}, {"label": "W30-25", "n": 29, "avg_days": 5.3, "p1": 48.3, "p2": 3.4, "p3": 6.9, "pn": 41.4}, {"label": "W31-25", "n": 38, "avg_days": 6.4, "p1": 42.1, "p2": 21.1, "p3": 10.5, "pn": 26.3}, {"label": "W32-25", "n": 28, "avg_days": 5.1, "p1": 28.6, "p2": 14.3, "p3": 14.3, "pn": 42.9}, {"label": "W33-25", "n": 40, "avg_days": 4.7, "p1": 62.5, "p2": 15.0, "p3": 2.5, "pn": 20.0}, {"label": "W34-25", "n": 29, "avg_days": 2.2, "p1": 24.1, "p2": 17.2, "p3": 10.3, "pn": 48.3}, {"label": "W35-25", "n": 32, "avg_days": 2.3, "p1": 50.0, "p2": 9.4, "p3": 6.2, "pn": 34.4}, {"label": "W36-25", "n": 38, "avg_days": 3.8, "p1": 68.4, "p2": 5.3, "p3": 2.6, "pn": 23.7}, {"label": "W37-25", "n": 32, "avg_days": 1.6, "p1": 31.2, "p2": 21.9, "p3": 3.1, "pn": 43.8}, {"label": "W38-25", "n": 46, "avg_days": 1.5, "p1": 50.0, "p2": 8.7, "p3": 4.3, "pn": 37.0}, {"label": "W39-25", "n": 103, "avg_days": 3.3, "p1": 32.0, "p2": 25.2, "p3": 7.8, "pn": 35.0}, {"label": "W40-25", "n": 89, "avg_days": 1.7, "p1": 38.2, "p2": 13.5, "p3": 7.9, "pn": 40.4}, {"label": "W41-25", "n": 67, "avg_days": 1.7, "p1": 46.3, "p2": 16.4, "p3": 6.0, "pn": 31.3}, {"label": "W42-25", "n": 91, "avg_days": 2.6, "p1": 42.9, "p2": 8.8, "p3": 3.3, "pn": 45.1}, {"label": "W43-25", "n": 69, "avg_days": 1.8, "p1": 40.6, "p2": 10.1, "p3": 8.7, "pn": 40.6}, {"label": "W44-25", "n": 72, "avg_days": 2.6, "p1": 43.1, "p2": 11.1, "p3": 2.8, "pn": 43.1}, {"label": "W45-25", "n": 98, "avg_days": 2.0, "p1": 34.7, "p2": 11.2, "p3": 4.1, "pn": 50.0}, {"label": "W46-25", "n": 99, "avg_days": 1.9, "p1": 40.4, "p2": 13.1, "p3": 4.0, "pn": 42.4}, {"label": "W47-25", "n": 87, "avg_days": 2.1, "p1": 51.7, "p2": 6.9, "p3": 4.6, "pn": 36.8}, {"label": "W48-25", "n": 71, "avg_days": 2.2, "p1": 43.7, "p2": 11.3, "p3": 1.4, "pn": 43.7}, {"label": "W49-25", "n": 97, "avg_days": 1.4, "p1": 33.0, "p2": 14.4, "p3": 6.2, "pn": 46.4}, {"label": "W50-25", "n": 112, "avg_days": 2.0, "p1": 36.6, "p2": 13.4, "p3": 1.8, "pn": 48.2}, {"label": "W51-25", "n": 91, "avg_days": 12.4, "p1": 37.4, "p2": 5.5, "p3": 4.4, "pn": 52.7}, {"label": "W52-25", "n": 111, "avg_days": 12.3, "p1": 24.3, "p2": 14.4, "p3": 0.0, "pn": 61.3}, {"label": "W01-26", "n": 61, "avg_days": 5.8, "p1": 19.7, "p2": 18.0, "p3": 1.6, "pn": 60.7}, {"label": "W02-26", "n": 98, "avg_days": 4.8, "p1": 30.6, "p2": 14.3, "p3": 5.1, "pn": 50.0}, {"label": "W03-26", "n": 98, "avg_days": 3.3, "p1": 36.7, "p2": 13.3, "p3": 2.0, "pn": 48.0}, {"label": "W04-26", "n": 98, "avg_days": 3.6, "p1": 32.7, "p2": 16.3, "p3": 2.0, "pn": 49.0}, {"label": "W05-26", "n": 94, "avg_days": 2.4, "p1": 39.4, "p2": 10.6, "p3": 4.3, "pn": 45.7}, {"label": "W06-26", "n": 66, "avg_days": 1.8, "p1": 42.4, "p2": 7.6, "p3": 3.0, "pn": 47.0}, {"label": "W07-26", "n": 48, "avg_days": 1.9, "p1": 47.9, "p2": 8.3, "p3": 2.1, "pn": 41.7}, {"label": "W08-26", "n": 50, "avg_days": 0.8, "p1": 52.0, "p2": 6.0, "p3": 10.0, "pn": 32.0}, {"label": "W09-26", "n": 25, "avg_days": 3.0, "p1": 48.0, "p2": 12.0, "p3": 0.0, "pn": 40.0}, {"label": "W10-26", "n": 38, "avg_days": 1.1, "p1": 42.1, "p2": 21.1, "p3": 2.6, "pn": 34.2}, {"label": "W11-26", "n": 45, "avg_days": 2.6, "p1": 53.3, "p2": 6.7, "p3": 4.4, "pn": 35.6}, {"label": "W12-26", "n": 37, "avg_days": 1.2, "p1": 54.1, "p2": 13.5, "p3": 2.7, "pn": 29.7}, {"label": "W13-26", "n": 42, "avg_days": 0.8, "p1": 61.9, "p2": 7.1, "p3": 7.1, "pn": 23.8}, {"label": "W14-26", "n": 35, "avg_days": 1.3, "p1": 54.3, "p2": 14.3, "p3": 0.0, "pn": 31.4}, {"label": "W15-26", "n": 39, "avg_days": 1.1, "p1": 53.8, "p2": 10.3, "p3": 5.1, "pn": 30.8}, {"label": "W16-26", "n": 39, "avg_days": 0.9, "p1": 51.3, "p2": 23.1, "p3": 0.0, "pn": 25.6}, {"label": "W17-26", "n": 40, "avg_days": 1.6, "p1": 52.5, "p2": 12.5, "p3": 2.5, "pn": 32.5}, {"label": "W18-26", "n": 21, "avg_days": 1.7, "p1": 38.1, "p2": 4.8, "p3": 0.0, "pn": 57.1}, {"label": "W19-26", "n": 25, "avg_days": 2.0, "p1": 52.0, "p2": 16.0, "p3": 0.0, "pn": 32.0}, {"label": "W20-26", "n": 32, "avg_days": 1.1, "p1": 50.0, "p2": 6.2, "p3": 3.1, "pn": 40.6}, {"label": "W21-26", "n": 29, "avg_days": 1.1, "p1": 48.3, "p2": 17.2, "p3": 3.4, "pn": 31.0}, {"label": "W22-26", "n": 37, "avg_days": 1.2, "p1": 48.6, "p2": 10.8, "p3": 0.0, "pn": 40.5}, {"label": "W23-26", "n": 40, "avg_days": 0.9, "p1": 52.5, "p2": 5.0, "p3": 0.0, "pn": 42.5}, {"label": "W24-26", "n": 12, "avg_days": 0.0, "p1": 75.0, "p2": 0.0, "p3": 0.0, "pn": 25.0}];
+
+function extract(data, key) { return data.map(r => r[key]); }
+
+let chartDays, chartAttempts;
+
+function buildCharts(data) {
+  if (chartDays)    chartDays.destroy();
+  if (chartAttempts) chartAttempts.destroy();
+
+  const labels = extract(data, 'label');
+
+  chartDays = new Chart(document.getElementById('avgDaysChart'), {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [{
+        label: 'Gem. dagen',
+        data: extract(data, 'avg_days'),
+        borderColor: '#2563eb', backgroundColor: '#2563eb18',
+        fill: true, tension: 0.3,
+        pointRadius: data.length <= 30 ? 4 : 2, pointHoverRadius: 6
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: { legend: { display: false }, tooltip: { callbacks: { label: c => ` ${c.parsed.y} dagen` } } },
+      scales: { y: { beginAtZero: true, title: { display: true, text: 'Dagen' } } }
+    }
+  });
+
+  chartAttempts = new Chart(document.getElementById('attemptsChart'), {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [
+        { label: '1e poging',    data: extract(data,'p1'), backgroundColor: '#10b981cc', stack:'s' },
+        { label: '2e poging',    data: extract(data,'p2'), backgroundColor: '#f59e0bcc', stack:'s' },
+        { label: '3e poging',    data: extract(data,'p3'), backgroundColor: '#f97316cc', stack:'s' },
+        { label: 'Niet bereikt', data: extract(data,'pn'), backgroundColor: '#94a3b8cc', stack:'s' },
+      ]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { display: true, position: 'top' },
+        tooltip: { callbacks: { label: c => ` ${c.dataset.label}: ${c.parsed.y}%` } }
+      },
+      scales: {
+        x: { stacked: true },
+        y: { stacked: true, max: 100, ticks: { callback: v => v + '%' } }
+      }
+    }
+  });
+}
+
+function setView(v) {
+  document.getElementById('btnMonth').classList.toggle('active', v==='month');
+  document.getElementById('btnWeek').classList.toggle('active',  v==='week');
+  buildCharts(v === 'month' ? MONTHLY : WEEKLY);
+}
+
+buildCharts(MONTHLY);
+</script>
+</body>
+</html>
