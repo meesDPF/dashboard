@@ -4,39 +4,53 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>DePrefabriek — Opvolgsnelheid</title>
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <style>
-:root { --orange: #F26522; --dark: #1a1a1a; --gray: #f2f2f2; --card: #ffffff; --text: #222222; }
+:root { --orange: #F26522; --dark: #1a1a1a; --gray: #f2f2f2; --card: #fff; --text: #222; }
 * { box-sizing: border-box; margin: 0; padding: 0; }
-html, body { height: 100%; }
-body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--gray); color: var(--text); line-height: 1.5; font-size: 18px; }
-.container { width: 100%; height: 100vh; display: flex; flex-direction: column; padding: 1.5rem 2rem; gap: 1rem; }
-header { background: var(--dark); color: white; padding: 1.25rem 2rem; border-radius: 0.75rem; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
-.header-left { display: flex; align-items: center; gap: 1.5rem; }
-.logo-mark { background: var(--orange); color: white; font-weight: 900; font-size: 1rem; padding: 0.4rem 0.75rem; border-radius: 0.4rem; letter-spacing: 0.05em; text-transform: uppercase; }
-header h1 { font-size: 1.4rem; font-weight: 700; }
-header p { opacity: 0.6; font-size: 0.8rem; margin-top: 0.15rem; }
-.meta { font-size: 0.7rem; opacity: 0.5; margin-top: 0.2rem; }
+body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; background: var(--gray); color: var(--text); font-size: 16px; }
+.container { min-height: 100vh; display: flex; flex-direction: column; padding: 1.25rem 1.75rem; gap: 1rem; }
+header { background: var(--dark); color: white; padding: 1.1rem 1.75rem; border-radius: 0.75rem; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
+.header-left { display: flex; align-items: center; gap: 1.25rem; }
+.logo-mark { background: var(--orange); color: white; font-weight: 900; font-size: 0.9rem; padding: 0.35rem 0.65rem; border-radius: 0.4rem; letter-spacing: 0.05em; text-transform: uppercase; }
+header h1 { font-size: 1.25rem; font-weight: 700; }
+header p { opacity: 0.55; font-size: 0.75rem; margin-top: 0.1rem; }
+.meta { font-size: 0.65rem; opacity: 0.4; margin-top: 0.1rem; }
 .toggle { display: flex; background: rgba(255,255,255,0.1); border-radius: 0.4rem; overflow: hidden; border: 1px solid rgba(255,255,255,0.15); }
-.toggle button { padding: 0.5rem 1.25rem; border: none; background: transparent; color: white; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: background 0.15s; }
+.toggle button { padding: 0.45rem 1.1rem; border: none; background: transparent; color: white; font-size: 0.82rem; font-weight: 600; cursor: pointer; transition: background 0.15s; }
 .toggle button.active { background: var(--orange); }
-.charts { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; flex: 1; min-height: 0; }
-.chart-card { background: var(--card); padding: 1.5rem; border-radius: 0.75rem; box-shadow: 0 1px 4px rgba(0,0,0,0.08); display: flex; flex-direction: column; }
-.chart-card h2 { font-size: 1rem; font-weight: 700; margin-bottom: 1rem; color: var(--dark); border-left: 4px solid var(--orange); padding-left: 0.75rem; flex-shrink: 0; }
-.chart-card .chart-wrap { flex: 1; min-height: 0; position: relative; }
-.chart-card canvas { position: absolute; top: 0; left: 0; width: 100% !important; height: 100% !important; }
-footer { text-align: center; color: #aaa; font-size: 0.7rem; flex-shrink: 0; padding: 0.25rem; }
+.charts { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+.chart-card { background: var(--card); padding: 1.25rem 1.5rem; border-radius: 0.75rem; box-shadow: 0 1px 4px rgba(0,0,0,0.07); }
+.chart-card.full { grid-column: 1 / -1; }
+.chart-card h2 { font-size: 0.95rem; font-weight: 700; margin-bottom: 0.6rem; color: var(--dark); border-left: 4px solid var(--orange); padding-left: 0.65rem; display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
+.badge { background: var(--orange); color: white; font-size: 0.6rem; font-weight: 700; padding: 0.12rem 0.4rem; border-radius: 0.25rem; text-transform: uppercase; letter-spacing: 0.04em; }
+.period-label { font-size: 0.72rem; color: #999; font-weight: 400; margin-bottom: 0.5rem; }
+.chart-wrap { position: relative; height: 240px; }
+.chart-wrap canvas { position: absolute; top: 0; left: 0; width: 100% !important; height: 100% !important; }
+.nb-wrap { position: relative; height: 260px; }
+.nb-wrap canvas { position: absolute; top: 0; left: 0; width: 100% !important; height: 100% !important; }
+.leg { display: flex; gap: 0.9rem; flex-wrap: wrap; margin-bottom: 0.6rem; }
+.li { display: flex; align-items: center; gap: 0.3rem; font-size: 0.72rem; color: #777; }
+.li-sq { width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0; }
+.missed-panel { margin-top: 0.9rem; background: var(--gray); border-radius: 0.5rem; padding: 0.65rem 0.9rem; min-height: 40px; }
+.missed-panel .hint { font-size: 0.78rem; color: #999; margin: 0; }
+.missed-panel .ptitle { font-size: 0.82rem; font-weight: 600; color: var(--dark); margin-bottom: 0.4rem; }
+.missed-chips { display: flex; flex-wrap: wrap; gap: 0.3rem; }
+.chip { background: white; border: 1px solid #ddd; border-radius: 0.35rem; padding: 0.18rem 0.55rem; font-size: 0.72rem; color: var(--dark); }
+.chip .k { color: #aaa; margin-left: 0.3rem; font-size: 0.66rem; }
+footer { text-align: center; color: #bbb; font-size: 0.65rem; padding: 0.2rem; flex-shrink: 0; }
 </style>
 </head>
 <body>
 <div class="container">
+
 <header>
   <div class="header-left">
     <div class="logo-mark">DPF</div>
     <div>
       <h1>Opvolgsnelheid nieuwe leads</h1>
-      <p>Alleen leads waarbij minimaal 1 keer is nagebeld &nbsp;·&nbsp; 10,861 leads &nbsp;·&nbsp; 5,249 nagebeld</p>
-      <p class="meta">Bijgewerkt op 11 June 2026, 20:11</p>
+      <p>10,868 leads &nbsp;·&nbsp; 5,254 met belpoging</p>
+      <p class="meta">Bijgewerkt op 12 June 2026, 10:54</p>
     </div>
   </div>
   <div class="toggle">
@@ -46,86 +60,261 @@ footer { text-align: center; color: #aaa; font-size: 0.7rem; flex-shrink: 0; pad
 </header>
 
 <div class="charts">
+
+  <!-- Rij 1: bestaande charts -->
   <div class="chart-card">
     <h2>Gemiddeld aantal dagen tot eerste belpoging</h2>
     <div class="chart-wrap"><canvas id="avgDaysChart"></canvas></div>
   </div>
+
   <div class="chart-card">
-    <h2>Contactresultaat per periode (% van nagebelde leads)</h2>
+    <h2>Contactresultaat per periode <span style="font-size:0.72rem;font-weight:400;color:#aaa;">% van nagebelde leads</span></h2>
     <div class="chart-wrap"><canvas id="attemptsChart"></canvas></div>
   </div>
+
+  <!-- Rij 2: snelheid per kanaal + trend -->
+  <div class="chart-card">
+    <h2>% leads binnen 1 dag gebeld, per kanaal <span class="badge">nieuw</span></h2>
+    <div class="leg">
+      <span class="li"><span class="li-sq" style="background:#F26522"></span>Zelfde dag</span>
+      <span class="li"><span class="li-sq" style="background:#F4956A"></span>Dag 1</span>
+      <span class="li" style="color:#ccc;">| Doel: 100%</span>
+    </div>
+    <div class="period-label" id="speedKanaalPeriod"></div>
+    <div class="chart-wrap"><canvas id="speedKanaalChart"></canvas></div>
+  </div>
+
+  <div class="chart-card">
+    <h2>% binnen 1 dag gebeld — trend <span class="badge">nieuw</span></h2>
+    <div class="leg">
+      <span class="li"><span class="li-sq" style="background:#F26522"></span>Configurator</span>
+      <span class="li"><span style="display:inline-block;width:16px;border-bottom:2px dashed #F4956A;margin-right:2px;"></span>Contact NL</span>
+    </div>
+    <div class="chart-wrap"><canvas id="speedTrendChart"></canvas></div>
+  </div>
+
+  <!-- Rij 3: nagebeld % fullwidth -->
+  <div class="chart-card full">
+    <h2>% leads nagebeld per periode <span class="badge">nieuw</span></h2>
+    <div class="leg">
+      <span class="li"><span class="li-sq" style="background:#F26522"></span>Nagebeld</span>
+      <span class="li"><span class="li-sq" style="background:#E24B4A"></span>Gemist</span>
+      <span class="li"><span style="display:inline-block;width:16px;height:2px;background:rgba(0,0,0,0.35);margin-right:2px;vertical-align:middle;"></span>Leads in scope</span>
+      <span class="li" style="font-style:italic;color:#bbb;">Klik op balk voor details</span>
+    </div>
+    <div class="nb-wrap"><canvas id="nagebeldChart"></canvas></div>
+    <div class="missed-panel" id="missedPanel">
+      <p class="hint">Klik op een balk om te zien welke leads zijn gemist in die periode.</p>
+    </div>
+  </div>
+
 </div>
 
-<footer>Bron: crm_export.csv &nbsp;·&nbsp; 11 June 2026, 20:11</footer>
+<footer>Bron: crm_export.csv &nbsp;·&nbsp; 12 June 2026, 10:54</footer>
 </div>
 
 <script>
-const MONTHLY = [{"label": "2024-07", "n": 188, "avg_days": 1.0, "p1": 41.0, "p2": 19.1, "p3": 3.2, "pn": 36.7}, {"label": "2024-08", "n": 129, "avg_days": 12.1, "p1": 42.6, "p2": 15.5, "p3": 3.1, "pn": 38.8}, {"label": "2024-09", "n": 227, "avg_days": 5.4, "p1": 42.7, "p2": 15.0, "p3": 3.1, "pn": 39.2}, {"label": "2024-10", "n": 271, "avg_days": 3.5, "p1": 42.4, "p2": 13.3, "p3": 4.4, "pn": 39.9}, {"label": "2024-11", "n": 197, "avg_days": 2.6, "p1": 37.1, "p2": 7.6, "p3": 7.1, "pn": 48.2}, {"label": "2024-12", "n": 172, "avg_days": 8.9, "p1": 43.0, "p2": 11.6, "p3": 5.8, "pn": 39.5}, {"label": "2025-01", "n": 250, "avg_days": 5.7, "p1": 52.4, "p2": 11.2, "p3": 1.2, "pn": 35.2}, {"label": "2025-02", "n": 226, "avg_days": 4.0, "p1": 43.8, "p2": 9.7, "p3": 0.4, "pn": 46.0}, {"label": "2025-03", "n": 225, "avg_days": 3.4, "p1": 43.1, "p2": 10.2, "p3": 2.2, "pn": 44.4}, {"label": "2025-04", "n": 173, "avg_days": 6.5, "p1": 48.0, "p2": 12.1, "p3": 3.5, "pn": 36.4}, {"label": "2025-05", "n": 151, "avg_days": 3.7, "p1": 47.0, "p2": 13.9, "p3": 6.0, "pn": 33.1}, {"label": "2025-06", "n": 148, "avg_days": 2.2, "p1": 49.3, "p2": 11.5, "p3": 2.0, "pn": 37.2}, {"label": "2025-07", "n": 147, "avg_days": 3.4, "p1": 45.6, "p2": 17.0, "p3": 3.4, "pn": 34.0}, {"label": "2025-08", "n": 142, "avg_days": 3.9, "p1": 43.7, "p2": 14.8, "p3": 8.5, "pn": 33.1}, {"label": "2025-09", "n": 247, "avg_days": 2.5, "p1": 42.5, "p2": 17.0, "p3": 6.5, "pn": 34.0}, {"label": "2025-10", "n": 340, "avg_days": 2.1, "p1": 41.2, "p2": 12.6, "p3": 5.3, "pn": 40.9}, {"label": "2025-11", "n": 375, "avg_days": 2.1, "p1": 42.7, "p2": 10.1, "p3": 3.5, "pn": 43.7}, {"label": "2025-12", "n": 456, "avg_days": 7.4, "p1": 32.0, "p2": 12.1, "p3": 3.1, "pn": 52.9}, {"label": "2026-01", "n": 438, "avg_days": 3.9, "p1": 32.4, "p2": 14.4, "p3": 3.0, "pn": 50.2}, {"label": "2026-02", "n": 199, "avg_days": 1.8, "p1": 47.2, "p2": 8.0, "p3": 4.5, "pn": 40.2}, {"label": "2026-03", "n": 171, "avg_days": 1.4, "p1": 53.2, "p2": 11.1, "p3": 4.1, "pn": 31.6}, {"label": "2026-04", "n": 154, "avg_days": 1.2, "p1": 50.6, "p2": 15.6, "p3": 1.9, "pn": 31.8}, {"label": "2026-05", "n": 135, "avg_days": 1.4, "p1": 49.6, "p2": 11.1, "p3": 1.5, "pn": 37.8}, {"label": "2026-06", "n": 52, "avg_days": 0.7, "p1": 57.7, "p2": 3.8, "p3": 0.0, "pn": 38.5}];
-const WEEKLY  = [{"label": "W17-25", "n": 42, "avg_days": 12.3, "p1": 42.9, "p2": 21.4, "p3": 2.4, "pn": 33.3}, {"label": "W18-25", "n": 27, "avg_days": 8.3, "p1": 55.6, "p2": 14.8, "p3": 3.7, "pn": 25.9}, {"label": "W19-25", "n": 55, "avg_days": 4.2, "p1": 40.0, "p2": 16.4, "p3": 3.6, "pn": 40.0}, {"label": "W20-25", "n": 45, "avg_days": 3.6, "p1": 57.8, "p2": 11.1, "p3": 6.7, "pn": 24.4}, {"label": "W21-25", "n": 24, "avg_days": 2.4, "p1": 50.0, "p2": 4.2, "p3": 12.5, "pn": 33.3}, {"label": "W22-25", "n": 23, "avg_days": 2.5, "p1": 39.1, "p2": 21.7, "p3": 4.3, "pn": 34.8}, {"label": "W23-25", "n": 32, "avg_days": 2.5, "p1": 50.0, "p2": 18.8, "p3": 3.1, "pn": 28.1}, {"label": "W24-25", "n": 32, "avg_days": 1.7, "p1": 56.2, "p2": 6.2, "p3": 0.0, "pn": 37.5}, {"label": "W25-25", "n": 38, "avg_days": 2.3, "p1": 50.0, "p2": 5.3, "p3": 5.3, "pn": 39.5}, {"label": "W26-25", "n": 39, "avg_days": 2.5, "p1": 41.0, "p2": 17.9, "p3": 0.0, "pn": 41.0}, {"label": "W27-25", "n": 23, "avg_days": 1.5, "p1": 56.5, "p2": 21.7, "p3": 0.0, "pn": 21.7}, {"label": "W28-25", "n": 41, "avg_days": 2.0, "p1": 41.5, "p2": 22.0, "p3": 2.4, "pn": 34.1}, {"label": "W29-25", "n": 31, "avg_days": 2.4, "p1": 45.2, "p2": 16.1, "p3": 0.0, "pn": 38.7}, {"label": "W30-25", "n": 29, "avg_days": 5.3, "p1": 48.3, "p2": 3.4, "p3": 6.9, "pn": 41.4}, {"label": "W31-25", "n": 38, "avg_days": 6.4, "p1": 42.1, "p2": 21.1, "p3": 10.5, "pn": 26.3}, {"label": "W32-25", "n": 28, "avg_days": 5.1, "p1": 28.6, "p2": 14.3, "p3": 14.3, "pn": 42.9}, {"label": "W33-25", "n": 40, "avg_days": 4.7, "p1": 62.5, "p2": 15.0, "p3": 2.5, "pn": 20.0}, {"label": "W34-25", "n": 29, "avg_days": 2.2, "p1": 24.1, "p2": 17.2, "p3": 10.3, "pn": 48.3}, {"label": "W35-25", "n": 32, "avg_days": 2.3, "p1": 50.0, "p2": 9.4, "p3": 6.2, "pn": 34.4}, {"label": "W36-25", "n": 38, "avg_days": 3.8, "p1": 68.4, "p2": 5.3, "p3": 2.6, "pn": 23.7}, {"label": "W37-25", "n": 32, "avg_days": 1.6, "p1": 31.2, "p2": 21.9, "p3": 3.1, "pn": 43.8}, {"label": "W38-25", "n": 46, "avg_days": 1.5, "p1": 50.0, "p2": 8.7, "p3": 4.3, "pn": 37.0}, {"label": "W39-25", "n": 103, "avg_days": 3.3, "p1": 32.0, "p2": 25.2, "p3": 7.8, "pn": 35.0}, {"label": "W40-25", "n": 89, "avg_days": 1.7, "p1": 38.2, "p2": 13.5, "p3": 7.9, "pn": 40.4}, {"label": "W41-25", "n": 67, "avg_days": 1.7, "p1": 46.3, "p2": 16.4, "p3": 6.0, "pn": 31.3}, {"label": "W42-25", "n": 91, "avg_days": 2.6, "p1": 42.9, "p2": 8.8, "p3": 3.3, "pn": 45.1}, {"label": "W43-25", "n": 69, "avg_days": 1.8, "p1": 40.6, "p2": 10.1, "p3": 8.7, "pn": 40.6}, {"label": "W44-25", "n": 72, "avg_days": 2.6, "p1": 43.1, "p2": 11.1, "p3": 2.8, "pn": 43.1}, {"label": "W45-25", "n": 98, "avg_days": 2.0, "p1": 34.7, "p2": 11.2, "p3": 4.1, "pn": 50.0}, {"label": "W46-25", "n": 99, "avg_days": 1.9, "p1": 40.4, "p2": 13.1, "p3": 4.0, "pn": 42.4}, {"label": "W47-25", "n": 87, "avg_days": 2.1, "p1": 51.7, "p2": 6.9, "p3": 4.6, "pn": 36.8}, {"label": "W48-25", "n": 71, "avg_days": 2.2, "p1": 43.7, "p2": 11.3, "p3": 1.4, "pn": 43.7}, {"label": "W49-25", "n": 97, "avg_days": 1.4, "p1": 33.0, "p2": 14.4, "p3": 6.2, "pn": 46.4}, {"label": "W50-25", "n": 112, "avg_days": 2.0, "p1": 36.6, "p2": 13.4, "p3": 1.8, "pn": 48.2}, {"label": "W51-25", "n": 91, "avg_days": 12.4, "p1": 37.4, "p2": 5.5, "p3": 4.4, "pn": 52.7}, {"label": "W52-25", "n": 111, "avg_days": 12.3, "p1": 24.3, "p2": 14.4, "p3": 0.0, "pn": 61.3}, {"label": "W01-26", "n": 61, "avg_days": 5.8, "p1": 19.7, "p2": 18.0, "p3": 1.6, "pn": 60.7}, {"label": "W02-26", "n": 98, "avg_days": 4.8, "p1": 30.6, "p2": 14.3, "p3": 5.1, "pn": 50.0}, {"label": "W03-26", "n": 98, "avg_days": 3.3, "p1": 36.7, "p2": 13.3, "p3": 2.0, "pn": 48.0}, {"label": "W04-26", "n": 98, "avg_days": 3.6, "p1": 32.7, "p2": 16.3, "p3": 2.0, "pn": 49.0}, {"label": "W05-26", "n": 94, "avg_days": 2.4, "p1": 39.4, "p2": 10.6, "p3": 4.3, "pn": 45.7}, {"label": "W06-26", "n": 66, "avg_days": 1.8, "p1": 42.4, "p2": 7.6, "p3": 3.0, "pn": 47.0}, {"label": "W07-26", "n": 48, "avg_days": 1.9, "p1": 47.9, "p2": 8.3, "p3": 2.1, "pn": 41.7}, {"label": "W08-26", "n": 50, "avg_days": 0.8, "p1": 52.0, "p2": 6.0, "p3": 10.0, "pn": 32.0}, {"label": "W09-26", "n": 25, "avg_days": 3.0, "p1": 48.0, "p2": 12.0, "p3": 0.0, "pn": 40.0}, {"label": "W10-26", "n": 38, "avg_days": 1.1, "p1": 42.1, "p2": 21.1, "p3": 2.6, "pn": 34.2}, {"label": "W11-26", "n": 45, "avg_days": 2.6, "p1": 53.3, "p2": 6.7, "p3": 4.4, "pn": 35.6}, {"label": "W12-26", "n": 37, "avg_days": 1.2, "p1": 54.1, "p2": 13.5, "p3": 2.7, "pn": 29.7}, {"label": "W13-26", "n": 42, "avg_days": 0.8, "p1": 61.9, "p2": 7.1, "p3": 7.1, "pn": 23.8}, {"label": "W14-26", "n": 35, "avg_days": 1.3, "p1": 54.3, "p2": 14.3, "p3": 0.0, "pn": 31.4}, {"label": "W15-26", "n": 39, "avg_days": 1.1, "p1": 53.8, "p2": 10.3, "p3": 5.1, "pn": 30.8}, {"label": "W16-26", "n": 39, "avg_days": 0.9, "p1": 51.3, "p2": 23.1, "p3": 0.0, "pn": 25.6}, {"label": "W17-26", "n": 40, "avg_days": 1.6, "p1": 52.5, "p2": 12.5, "p3": 2.5, "pn": 32.5}, {"label": "W18-26", "n": 21, "avg_days": 1.7, "p1": 38.1, "p2": 4.8, "p3": 0.0, "pn": 57.1}, {"label": "W19-26", "n": 25, "avg_days": 2.0, "p1": 52.0, "p2": 16.0, "p3": 0.0, "pn": 32.0}, {"label": "W20-26", "n": 32, "avg_days": 1.1, "p1": 50.0, "p2": 6.2, "p3": 3.1, "pn": 40.6}, {"label": "W21-26", "n": 29, "avg_days": 1.1, "p1": 48.3, "p2": 17.2, "p3": 3.4, "pn": 31.0}, {"label": "W22-26", "n": 37, "avg_days": 1.2, "p1": 48.6, "p2": 10.8, "p3": 0.0, "pn": 40.5}, {"label": "W23-26", "n": 40, "avg_days": 0.9, "p1": 52.5, "p2": 5.0, "p3": 0.0, "pn": 42.5}, {"label": "W24-26", "n": 12, "avg_days": 0.0, "p1": 75.0, "p2": 0.0, "p3": 0.0, "pn": 25.0}];
+const MONTHLY          = [{"label": "2024-07", "n": 188, "avg_days": 1.0, "p1": 41.0, "p2": 19.1, "p3": 3.2, "pn": 36.7}, {"label": "2024-08", "n": 129, "avg_days": 12.1, "p1": 42.6, "p2": 15.5, "p3": 3.1, "pn": 38.8}, {"label": "2024-09", "n": 227, "avg_days": 5.4, "p1": 42.7, "p2": 15.0, "p3": 3.1, "pn": 39.2}, {"label": "2024-10", "n": 271, "avg_days": 3.5, "p1": 42.4, "p2": 13.3, "p3": 4.4, "pn": 39.9}, {"label": "2024-11", "n": 197, "avg_days": 2.6, "p1": 37.1, "p2": 7.6, "p3": 7.1, "pn": 48.2}, {"label": "2024-12", "n": 172, "avg_days": 8.9, "p1": 43.0, "p2": 11.6, "p3": 5.8, "pn": 39.5}, {"label": "2025-01", "n": 250, "avg_days": 5.7, "p1": 52.4, "p2": 11.2, "p3": 1.2, "pn": 35.2}, {"label": "2025-02", "n": 226, "avg_days": 4.0, "p1": 43.8, "p2": 9.7, "p3": 0.4, "pn": 46.0}, {"label": "2025-03", "n": 225, "avg_days": 3.4, "p1": 43.1, "p2": 10.2, "p3": 2.2, "pn": 44.4}, {"label": "2025-04", "n": 173, "avg_days": 6.5, "p1": 48.0, "p2": 12.1, "p3": 3.5, "pn": 36.4}, {"label": "2025-05", "n": 151, "avg_days": 3.7, "p1": 47.0, "p2": 13.9, "p3": 6.0, "pn": 33.1}, {"label": "2025-06", "n": 148, "avg_days": 2.2, "p1": 49.3, "p2": 11.5, "p3": 2.0, "pn": 37.2}, {"label": "2025-07", "n": 147, "avg_days": 3.4, "p1": 45.6, "p2": 17.0, "p3": 3.4, "pn": 34.0}, {"label": "2025-08", "n": 142, "avg_days": 3.9, "p1": 43.7, "p2": 14.8, "p3": 8.5, "pn": 33.1}, {"label": "2025-09", "n": 247, "avg_days": 2.5, "p1": 42.5, "p2": 17.0, "p3": 6.5, "pn": 34.0}, {"label": "2025-10", "n": 340, "avg_days": 2.1, "p1": 41.2, "p2": 12.6, "p3": 5.3, "pn": 40.9}, {"label": "2025-11", "n": 375, "avg_days": 2.1, "p1": 42.7, "p2": 10.1, "p3": 3.5, "pn": 43.7}, {"label": "2025-12", "n": 456, "avg_days": 7.4, "p1": 32.0, "p2": 12.1, "p3": 3.1, "pn": 52.9}, {"label": "2026-01", "n": 438, "avg_days": 3.9, "p1": 32.4, "p2": 14.4, "p3": 3.0, "pn": 50.2}, {"label": "2026-02", "n": 199, "avg_days": 1.8, "p1": 47.2, "p2": 8.0, "p3": 4.5, "pn": 40.2}, {"label": "2026-03", "n": 171, "avg_days": 1.4, "p1": 53.2, "p2": 11.1, "p3": 4.1, "pn": 31.6}, {"label": "2026-04", "n": 154, "avg_days": 1.2, "p1": 50.6, "p2": 15.6, "p3": 1.9, "pn": 31.8}, {"label": "2026-05", "n": 135, "avg_days": 1.4, "p1": 49.6, "p2": 11.1, "p3": 1.5, "pn": 37.8}, {"label": "2026-06", "n": 57, "avg_days": 0.7, "p1": 57.9, "p2": 3.5, "p3": 0.0, "pn": 38.6}];
+const WEEKLY           = [{"label": "W05-26", "n": 94, "avg_days": 2.4, "p1": 39.4, "p2": 10.6, "p3": 4.3, "pn": 45.7}, {"label": "W06-26", "n": 66, "avg_days": 1.8, "p1": 42.4, "p2": 7.6, "p3": 3.0, "pn": 47.0}, {"label": "W07-26", "n": 48, "avg_days": 1.9, "p1": 47.9, "p2": 8.3, "p3": 2.1, "pn": 41.7}, {"label": "W08-26", "n": 50, "avg_days": 0.8, "p1": 52.0, "p2": 6.0, "p3": 10.0, "pn": 32.0}, {"label": "W09-26", "n": 25, "avg_days": 3.0, "p1": 48.0, "p2": 12.0, "p3": 0.0, "pn": 40.0}, {"label": "W10-26", "n": 38, "avg_days": 1.1, "p1": 42.1, "p2": 21.1, "p3": 2.6, "pn": 34.2}, {"label": "W11-26", "n": 45, "avg_days": 2.6, "p1": 53.3, "p2": 6.7, "p3": 4.4, "pn": 35.6}, {"label": "W12-26", "n": 37, "avg_days": 1.2, "p1": 54.1, "p2": 13.5, "p3": 2.7, "pn": 29.7}, {"label": "W13-26", "n": 42, "avg_days": 0.8, "p1": 61.9, "p2": 7.1, "p3": 7.1, "pn": 23.8}, {"label": "W14-26", "n": 35, "avg_days": 1.3, "p1": 54.3, "p2": 14.3, "p3": 0.0, "pn": 31.4}, {"label": "W15-26", "n": 39, "avg_days": 1.1, "p1": 53.8, "p2": 10.3, "p3": 5.1, "pn": 30.8}, {"label": "W16-26", "n": 39, "avg_days": 0.9, "p1": 51.3, "p2": 23.1, "p3": 0.0, "pn": 25.6}, {"label": "W17-26", "n": 40, "avg_days": 1.6, "p1": 52.5, "p2": 12.5, "p3": 2.5, "pn": 32.5}, {"label": "W18-26", "n": 21, "avg_days": 1.7, "p1": 38.1, "p2": 4.8, "p3": 0.0, "pn": 57.1}, {"label": "W19-26", "n": 25, "avg_days": 2.0, "p1": 52.0, "p2": 16.0, "p3": 0.0, "pn": 32.0}, {"label": "W20-26", "n": 32, "avg_days": 1.1, "p1": 50.0, "p2": 6.2, "p3": 3.1, "pn": 40.6}, {"label": "W21-26", "n": 29, "avg_days": 1.1, "p1": 48.3, "p2": 17.2, "p3": 3.4, "pn": 31.0}, {"label": "W22-26", "n": 37, "avg_days": 1.2, "p1": 48.6, "p2": 10.8, "p3": 0.0, "pn": 40.5}, {"label": "W23-26", "n": 40, "avg_days": 0.9, "p1": 52.5, "p2": 5.0, "p3": 0.0, "pn": 42.5}, {"label": "W24-26", "n": 17, "avg_days": 0.3, "p1": 70.6, "p2": 0.0, "p3": 0.0, "pn": 29.4}];
+const NB_MONTHLY       = [{"label": "2024-07", "total": 212, "nagebeld": 166, "pct": 78.3, "missed": [["15066", "Overig"], ["15171", "Overig"], ["15300", "Overig"], ["15288", "Configurator"], ["15290", "Configurator"], ["15348", "Overig"], ["15489", "Overig"], ["15664", "Contact NL"], ["15900", "Overig"], ["16105", "Overig"], ["16156", "Overig"], ["16316", "Overig"], ["16488", "Overig"], ["16540", "Overig"], ["16616", "Configurator"], ["16655", "Overig"], ["16714", "Overig"], ["16783", "Configurator"], ["16892", "Overig"], ["16988", "Overig"], ["17106", "Configurator"], ["17189", "Contact NL"], ["17237", "Overig"], ["17264", "Configurator"], ["17274", "Contact NL"], ["17785", "Overig"], ["17814", "Overig"], ["17861", "Overig"], ["17926", "Configurator"], ["17962", "Overig"], ["17975", "Configurator"], ["18082", "Overig"], ["18259", "Configurator"], ["18314", "Overig"], ["18505", "Overig"], ["18710", "Overig"], ["18921", "Configurator"]]}, {"label": "2024-08", "total": 133, "nagebeld": 113, "pct": 85.0, "missed": [["19148", "Overig"], ["19358", "Overig"], ["19367", "Overig"], ["19511", "Overig"], ["19848", "Contact NL"], ["20091", "Overig"], ["20727", "Overig"], ["20853", "Overig"], ["20867", "Overig"], ["21109", "Overig"], ["21172", "Overig"], ["21196", "Overig"], ["21326", "Configurator"], ["21599", "Contact NL"], ["21701", "Configurator"], ["21729", "Configurator"], ["22055", "Overig"], ["22167", "Contact NL"], ["22209", "Overig"], ["22234", "Overig"]]}, {"label": "2024-09", "total": 229, "nagebeld": 200, "pct": 87.3, "missed": [["22444", "Overig"], ["22451", "Configurator"], ["22987", "Configurator"], ["23291", "Contact NL"], ["23495", "Configurator"], ["23585", "Configurator"], ["23623", "Overig"], ["23808", "Overig"], ["24054", "Configurator"], ["24071", "Configurator"], ["24306", "Overig"], ["24855", "Configurator"], ["24882", "Configurator"], ["25254", "Configurator"], ["25298", "Overig"], ["25394", "Overig"], ["25880", "Overig"], ["26958", "Configurator"], ["27027", "Overig"], ["27139", "Configurator"], ["27283", "Overig"], ["27452", "Configurator"], ["27506", "Overig"], ["27575", "Configurator"], ["27722", "Configurator"]]}, {"label": "2024-10", "total": 292, "nagebeld": 245, "pct": 83.9, "missed": [["28143", "Configurator"], ["28435", "Contact NL"], ["28565", "Configurator"], ["28601", "Overig"], ["28881", "Overig"], ["28928", "Configurator"], ["29084", "Overig"], ["29151", "Overig"], ["29239", "Configurator"], ["29291", "Overig"], ["29627", "Overig"], ["29833", "Overig"], ["29876", "Overig"], ["30093", "Overig"], ["30121", "Overig"], ["30213", "Configurator"], ["30360", "Overig"], ["30540", "Configurator"], ["30701", "Overig"], ["30831", "Configurator"], ["30903", "Overig"], ["31206", "Overig"], ["31305", "Overig"], ["31330", "Overig"], ["31407", "Configurator"], ["31517", "Overig"], ["31901", "Configurator"], ["32026", "Overig"], ["32475", "Overig"], ["32813", "Configurator"], ["33037", "Overig"], ["33180", "Configurator"], ["33195", "Configurator"], ["33242", "Overig"], ["33419", "Configurator"], ["33737", "Configurator"], ["33886", "Overig"], ["33911", "Configurator"], ["34024", "Configurator"], ["34085", "Overig"], ["34143", "Contact NL"]]}, {"label": "2024-11", "total": 241, "nagebeld": 201, "pct": 83.4, "missed": [["34433", "Configurator"], ["34994", "Contact NL"], ["35078", "Configurator"], ["35281", "Configurator"], ["35463", "Configurator"], ["35751", "Configurator"], ["35771", "Configurator"], ["35804", "Configurator"], ["35927", "Overig"], ["35977", "Configurator"], ["35994", "Overig"], ["36021", "Overig"], ["36054", "Overig"], ["36063", "Configurator"], ["36161", "Overig"], ["36251", "Overig"], ["36461", "Configurator"], ["36617", "Configurator"], ["36636", "Configurator"], ["36723", "Overig"], ["36956", "Overig"], ["36992", "Overig"], ["37624", "Overig"], ["37669", "Overig"], ["37796", "Overig"], ["37899", "Configurator"], ["38070", "Overig"], ["38232", "Overig"], ["38499", "Configurator"], ["38601", "Overig"], ["38647", "Overig"], ["41012", "Overig"], ["42373", "Configurator"], ["42566", "Configurator"], ["42576", "Overig"], ["42595", "Overig"], ["42727", "Overig"], ["42762", "Configurator"], ["42852", "Overig"]]}, {"label": "2024-12", "total": 168, "nagebeld": 136, "pct": 81.0, "missed": [["43766", "Configurator"], ["44005", "Configurator"], ["44373", "Overig"], ["44561", "Overig"], ["45137", "Configurator"], ["45729", "Overig"], ["45801", "Overig"], ["46225", "Configurator"], ["46231", "Overig"], ["46244", "Configurator"], ["46353", "Overig"], ["46358", "Overig"], ["46407", "Overig"], ["46550", "Overig"], ["46733", "Overig"], ["46816", "Overig"], ["46951", "Overig"], ["47070", "Configurator"], ["47122", "Overig"], ["47577", "Overig"], ["47613", "Configurator"], ["47714", "Configurator"], ["47852", "Overig"], ["48855", "Overig"], ["49261", "Configurator"], ["49739", "Overig"], ["49982", "Configurator"], ["50084", "Overig"], ["50128", "Overig"], ["50409", "Overig"]]}, {"label": "2025-01", "total": 262, "nagebeld": 223, "pct": 85.1, "missed": [["50444", "Overig"], ["50674", "Overig"], ["51039", "Overig"], ["51158", "Overig"], ["51268", "Configurator"], ["52066", "Overig"], ["52068", "Overig"], ["52545", "Overig"], ["52866", "Configurator"], ["52927", "Overig"], ["52960", "Contact NL"], ["53003", "Overig"], ["53253", "Overig"], ["53496", "Configurator"], ["53638", "Overig"], ["53682", "Overig"], ["53731", "Configurator"], ["53762", "Overig"], ["53801", "Configurator"], ["53805", "Overig"], ["54025", "Overig"], ["54225", "Overig"], ["54586", "Configurator"], ["54598", "Configurator"], ["54603", "Configurator"], ["54637", "Overig"], ["54968", "Overig"], ["54978", "Overig"], ["55046", "Configurator"], ["55775", "Overig"], ["55786", "Overig"], ["55795", "Overig"], ["55546", "Overig"], ["55974", "Overig"], ["56096", "Overig"], ["56202", "Overig"], ["57018", "Overig"]]}, {"label": "2025-02", "total": 234, "nagebeld": 186, "pct": 79.5, "missed": [["57206", "Overig"], ["57212", "Contact NL"], ["57236", "Overig"], ["57255", "Configurator"], ["57293", "Overig"], ["57334", "Contact NL"], ["57454", "Configurator"], ["57587", "Overig"], ["57688", "Overig"], ["57991", "Configurator"], ["58018", "Overig"], ["58031", "Overig"], ["58302", "Overig"], ["58343", "Configurator"], ["58403", "Overig"], ["10", "Overig"], ["58430", "Configurator"], ["58466", "Configurator"], ["58474", "Configurator"], ["58566", "Configurator"], ["58591", "Overig"], ["58784", "Overig"], ["58943", "Configurator"], ["59002", "Overig"], ["59194", "Contact NL"], ["59205", "Overig"], ["59213", "Overig"], ["60530", "Overig"], ["60705", "Configurator"], ["60843", "Overig"], ["61000", "Overig"], ["61089", "Overig"], ["61109", "Overig"], ["61246", "Overig"], ["61249", "Contact NL"], ["61473", "Overig"], ["61601", "Overig"], ["61845", "Contact NL"], ["61873", "Configurator"], ["61889", "Configurator"], ["61933", "Overig"], ["61976", "Overig"], ["62038", "Overig"], ["62130", "Overig"], ["62183", "Overig"], ["62222", "Overig"], ["62381", "Overig"]]}, {"label": "2025-03", "total": 269, "nagebeld": 221, "pct": 82.2, "missed": [["62417", "Overig"], ["62478", "Overig"], ["62783", "Configurator"], ["62828", "Contact NL"], ["62909", "Overig"], ["62916", "Overig"], ["62923", "Overig"], ["62935", "Overig"], ["62987", "Overig"], ["63121", "Configurator"], ["63220", "Overig"], ["63305", "Overig"], ["63380", "Overig"], ["63439", "Overig"], ["63445", "Overig"], ["63478", "Overig"], ["63596", "Overig"], ["63662", "Overig"], ["63816", "Contact NL"], ["63851", "Overig"], ["63895", "Configurator"], ["64281", "Overig"], ["64285", "Overig"], ["64353", "Overig"], ["64402", "Overig"], ["64434", "Overig"], ["64458", "Overig"], ["64521", "Overig"], ["64581", "Overig"], ["64622", "Overig"], ["64717", "Overig"], ["64991", "Overig"], ["65073", "Overig"], ["65279", "Overig"], ["65514", "Overig"], ["65525", "Overig"], ["65545", "Overig"], ["65772", "Overig"], ["65893", "Overig"], ["66005", "Configurator"], ["66035", "Overig"], ["66109", "Overig"], ["66165", "Overig"], ["66236", "Overig"], ["66360", "Overig"]]}, {"label": "2025-04", "total": 183, "nagebeld": 142, "pct": 77.6, "missed": [["66428", "Overig"], ["66507", "Contact NL"], ["66602", "Overig"], ["66833", "Overig"], ["66877", "Overig"], ["67526", "Overig"], ["67650", "Overig"], ["67715", "Configurator"], ["67716", "Configurator"], ["67746", "Overig"], ["67752", "Configurator"], ["67862", "Overig"], ["68134", "Overig"], ["68161", "Overig"], ["68826", "Overig"], ["68935", "Overig"], ["68970", "Overig"], ["69010", "Configurator"], ["69016", "Overig"], ["69123", "Overig"], ["69156", "Overig"], ["69237", "Overig"], ["69248", "Overig"], ["69265", "Configurator"], ["69342", "Overig"], ["69366", "Overig"], ["69398", "Overig"], ["69423", "Overig"], ["69440", "Overig"], ["69457", "Overig"], ["69507", "Configurator"], ["69510", "Configurator"], ["69689", "Overig"], ["69826", "Configurator"], ["69850", "Overig"], ["69897", "Overig"], ["69962", "Overig"], ["70064", "Overig"], ["70111", "Overig"]]}, {"label": "2025-05", "total": 185, "nagebeld": 140, "pct": 75.7, "missed": [["70142", "Configurator"], ["70143", "Overig"], ["70231", "Overig"], ["70313", "Overig"], ["70558", "Overig"], ["70690", "Overig"], ["70793", "Overig"], ["70858", "Overig"], ["71024", "Overig"], ["71084", "Overig"], ["71111", "Overig"], ["71124", "Overig"], ["71151", "Overig"], ["71162", "Overig"], ["71277", "Overig"], ["71290", "Overig"], ["71439", "Overig"], ["71454", "Overig"], ["71469", "Overig"], ["71518", "Overig"], ["71529", "Overig"], ["71537", "Overig"], ["71542", "Overig"], ["71581", "Overig"], ["71650", "Overig"], ["71659", "Overig"], ["71677", "Overig"], ["71698", "Overig"], ["71712", "Overig"], ["71716", "Overig"], ["71740", "Overig"], ["71743", "Configurator"], ["71750", "Overig"], ["71862", "Overig"], ["71874", "Overig"], ["71937", "Overig"], ["71962", "Overig"], ["72027", "Overig"], ["72034", "Overig"], ["72065", "Overig"], ["72066", "Overig"], ["72188", "Overig"]]}, {"label": "2025-06", "total": 170, "nagebeld": 140, "pct": 82.4, "missed": [["72281", "Overig"], ["72424", "Overig"], ["72643", "Overig"], ["72677", "Overig"], ["72682", "Overig"], ["72726", "Overig"], ["72736", "Overig"], ["72793", "Overig"], ["72805", "Overig"], ["72818", "Overig"], ["72899", "Overig"], ["72956", "Overig"], ["73176", "Overig"], ["73277", "Overig"], ["73415", "Overig"], ["73476", "Overig"], ["74181", "Overig"], ["74442", "Overig"], ["75271", "Overig"], ["75765", "Overig"], ["75973", "Overig"], ["77061", "Overig"], ["77081", "Overig"], ["77085", "Overig"], ["77260", "Overig"], ["77303", "Overig"], ["77307", "Overig"], ["77309", "Overig"], ["77341", "Overig"]]}, {"label": "2025-07", "total": 174, "nagebeld": 137, "pct": 78.7, "missed": [["77459", "Overig"], ["77510", "Overig"], ["77728", "Overig"], ["77789", "Overig"], ["77936", "Overig"], ["77974", "Overig"], ["78039", "Overig"], ["78189", "Overig"], ["78230", "Overig"], ["78289", "Overig"], ["78515", "Overig"], ["78566", "Overig"], ["78718", "Overig"], ["78751", "Overig"], ["78787", "Overig"], ["78822", "Overig"], ["79079", "Overig"], ["79082", "Overig"], ["79086", "Overig"], ["79137", "Overig"], ["79317", "Overig"], ["79365", "Overig"], ["79414", "Overig"], ["79607", "Overig"], ["79697", "Overig"], ["79781", "Overig"], ["79916", "Overig"], ["79922", "Overig"], ["79938", "Configurator"], ["79969", "Contact NL"], ["79989", "Overig"], ["80047", "Overig"], ["80111", "Overig"], ["80116", "Overig"], ["80125", "Overig"], ["80136", "Overig"]]}, {"label": "2025-08", "total": 148, "nagebeld": 126, "pct": 85.1, "missed": [["80177", "Overig"], ["80433", "Overig"], ["80468", "Overig"], ["80561", "Overig"], ["80651", "Overig"], ["80780", "Overig"], ["80808", "Overig"], ["80811", "Overig"], ["80950", "Overig"], ["80993", "Overig"], ["81005", "Overig"], ["81108", "Overig"], ["81272", "Overig"], ["81357", "Overig"], ["81480", "Overig"], ["81497", "Overig"], ["81576", "Overig"], ["82064", "Overig"], ["82168", "Overig"], ["82211", "Overig"]]}, {"label": "2025-09", "total": 246, "nagebeld": 214, "pct": 87.0, "missed": [["82699", "Overig"], ["83176", "Overig"], ["83235", "Overig"], ["83396", "Overig"], ["83407", "Overig"], ["83446", "Overig"], ["83458", "Configurator"], ["83626", "Overig"], ["85139", "Overig"], ["85226", "Overig"], ["85592", "Overig"], ["86334", "Overig"], ["86362", "Overig"], ["87556", "Configurator"], ["88206", "Overig"], ["89018", "Contact NL"], ["89852", "Overig"], ["89908", "Overig"], ["90160", "Overig"], ["90324", "Overig"], ["90362", "Overig"], ["90415", "Overig"], ["90452", "Overig"], ["90487", "Overig"], ["90627", "Overig"], ["91052", "Overig"], ["91390", "Overig"]]}, {"label": "2025-10", "total": 357, "nagebeld": 315, "pct": 88.2, "missed": [["91548", "Overig"], ["91846", "Overig"], ["91853", "Overig"], ["91947", "Configurator"], ["92299", "Overig"], ["92496", "Overig"], ["92651", "Overig"], ["107519", "Overig"], ["107779", "Overig"], ["107828", "Overig"], ["107995", "Overig"], ["108116", "Overig"], ["108159", "Configurator"], ["108300", "Overig"], ["108486", "Overig"], ["108509", "Overig"], ["109065", "Overig"], ["109092", "Overig"], ["109152", "Overig"], ["109601", "Overig"], ["117402", "Overig"], ["117449", "Overig"], ["117473", "Overig"], ["117474", "Overig"], ["118052", "Overig"], ["118269", "Overig"], ["118589", "Overig"], ["118760", "Overig"], ["120137", "Overig"], ["120388", "Overig"], ["120408", "Overig"], ["120648", "Overig"], ["120657", "Overig"], ["108135", "Overig"], ["121251", "Overig"], ["121263", "Overig"], ["121318", "Overig"], ["121836", "Overig"], ["121905", "Overig"], ["122030", "Overig"], ["122211", "Overig"]]}, {"label": "2025-11", "total": 381, "nagebeld": 349, "pct": 91.6, "missed": [["122385", "Configurator"], ["122617", "Overig"], ["122815", "Overig"], ["123086", "Overig"], ["123132", "Overig"], ["123181", "Overig"], ["123241", "Overig"], ["123529", "Overig"], ["124334", "Overig"], ["124560", "Overig"], ["124605", "Overig"], ["124642", "Overig"], ["124721", "Overig"], ["124723", "Overig"], ["124735", "Overig"], ["125217", "Overig"], ["125324", "Overig"], ["125607", "Overig"], ["125706", "Overig"], ["125979", "Overig"], ["126037", "Overig"], ["126179", "Overig"], ["126454", "Overig"], ["126652", "Overig"], ["126837", "Overig"], ["127434", "Overig"], ["127594", "Overig"], ["127774", "Configurator"], ["127874", "Overig"], ["127915", "Contact NL"]]}, {"label": "2025-12", "total": 438, "nagebeld": 411, "pct": 93.8, "missed": [["128192", "Overig"], ["128286", "Overig"], ["128359", "Overig"], ["128440", "Configurator"], ["128443", "Overig"], ["128452", "Overig"], ["128469", "Overig"], ["128688", "Overig"], ["129283", "Configurator"], ["129446", "Overig"], ["129662", "Overig"], ["129949", "Overig"], ["130268", "Overig"], ["130427", "Overig"], ["130518", "Configurator"], ["130664", "Overig"], ["131071", "Overig"], ["131162", "Overig"], ["131169", "Configurator"], ["131261", "Overig"], ["131282", "Overig"], ["131318", "Overig"], ["131372", "Overig"], ["131403", "Overig"], ["131426", "Overig"], ["131433", "Overig"]]}, {"label": "2026-01", "total": 468, "nagebeld": 422, "pct": 90.2, "missed": [["131866", "Overig"], ["131985", "Configurator"], ["132336", "Overig"], ["132530", "Configurator"], ["132624", "Overig"], ["132814", "Overig"], ["132825", "Overig"], ["132954", "Overig"], ["133131", "Overig"], ["133235", "Overig"], ["133303", "Overig"], ["133361", "Overig"], ["133390", "Configurator"], ["133408", "Overig"], ["133608", "Overig"], ["133613", "Overig"], ["133646", "Overig"], ["133869", "Overig"], ["133959", "Configurator"], ["133961", "Overig"], ["134001", "Overig"], ["134075", "Overig"], ["134455", "Overig"], ["134562", "Overig"], ["134584", "Overig"], ["134713", "Overig"], ["108173", "Overig"], ["134812", "Overig"], ["134871", "Overig"], ["134998", "Overig"], ["135251", "Overig"], ["135258", "Overig"], ["135320", "Overig"], ["135504", "Overig"], ["135779", "Overig"], ["135854", "Overig"], ["135899", "Overig"], ["135920", "Overig"]]}, {"label": "2026-02", "total": 240, "nagebeld": 197, "pct": 82.1, "missed": [["136105", "Overig"], ["136114", "Overig"], ["136128", "Overig"], ["136205", "Overig"], ["136272", "Overig"], ["136376", "Overig"], ["136378", "Overig"], ["136669", "Overig"], ["136722", "Overig"], ["136763", "Overig"], ["136941", "Overig"], ["136970", "Overig"], ["137004", "Overig"], ["137037", "Overig"], ["137089", "Overig"], ["137190", "Overig"], ["137250", "Overig"], ["137271", "Overig"], ["137427", "Overig"], ["137708", "Overig"], ["137880", "Overig"], ["137891", "Overig"], ["138373", "Overig"], ["138426", "Overig"], ["138607", "Overig"], ["138612", "Overig"], ["138626", "Overig"], ["138710", "Overig"], ["108187", "Overig"], ["138981", "Overig"], ["139167", "Overig"], ["139244", "Overig"], ["139486", "Overig"], ["139866", "Overig"], ["140018", "Overig"], ["140019", "Overig"], ["140161", "Overig"], ["140236", "Overig"], ["140519", "Overig"], ["140625", "Overig"], ["141251", "Overig"], ["141493", "Overig"], ["141529", "Overig"]]}, {"label": "2026-03", "total": 202, "nagebeld": 163, "pct": 80.7, "missed": [["141761", "Overig"], ["141854", "Overig"], ["141881", "Overig"], ["142310", "Configurator"], ["142608", "Overig"], ["142616", "Overig"], ["142789", "Overig"], ["142795", "Overig"], ["143571", "Overig"], ["143671", "Overig"], ["143745", "Overig"], ["143808", "Overig"], ["143889", "Overig"], ["143902", "Overig"], ["144144", "Overig"], ["144218", "Overig"], ["144345", "Configurator"], ["144365", "Overig"], ["144437", "Overig"], ["144485", "Overig"], ["145010", "Overig"], ["145062", "Overig"], ["145213", "Overig"], ["145217", "Overig"], ["145264", "Overig"], ["146487", "Overig"], ["146634", "Overig"], ["147206", "Overig"], ["147214", "Overig"], ["147349", "Overig"], ["147405", "Configurator"], ["147431", "Overig"], ["147513", "Overig"], ["147544", "Overig"], ["147712", "Overig"], ["147981", "Overig"]]}, {"label": "2026-04", "total": 182, "nagebeld": 151, "pct": 83.0, "missed": [["148554", "Overig"], ["148805", "Overig"], ["148808", "Overig"], ["148857", "Overig"], ["149411", "Overig"], ["149522", "Overig"], ["149785", "Overig"], ["149843", "Overig"], ["149849", "Overig"], ["150227", "Overig"], ["150322", "Overig"], ["150351", "Configurator"], ["150514", "Contact NL"], ["150610", "Overig"], ["151418", "Overig"], ["144981", "Overig"], ["145064", "Overig"], ["145286", "Overig"], ["145618", "Overig"], ["145664", "Overig"], ["145732", "Overig"], ["145735", "Overig"], ["145851", "Overig"], ["145997", "Overig"], ["146207", "Overig"], ["146471", "Overig"], ["146789", "Overig"], ["147012", "Overig"], ["147028", "Overig"], ["147060", "Overig"]]}, {"label": "2026-05", "total": 160, "nagebeld": 128, "pct": 80.0, "missed": [["147403", "Overig"], ["147478", "Overig"], ["147627", "Overig"], ["147630", "Overig"], ["147644", "Overig"], ["147823", "Overig"], ["147876", "Overig"], ["147894", "Overig"], ["147901", "Overig"], ["147981", "Overig"], ["147982", "Overig"], ["148113", "Overig"], ["148150", "Overig"], ["148202", "Overig"], ["148330", "Overig"], ["148409", "Overig"], ["149052", "Overig"], ["149350", "Overig"], ["149209", "Overig"], ["149222", "Overig"], ["149286", "Overig"], ["149404", "Overig"], ["149511", "Overig"], ["149787", "Overig"], ["149925", "Overig"], ["149943", "Overig"], ["149955", "Overig"], ["149964", "Overig"]]}, {"label": "2026-06", "total": 83, "nagebeld": 61, "pct": 73.5, "missed": [["150132", "Overig"], ["150517", "Overig"], ["150621", "Overig"], ["150665", "Overig"], ["150666", "Overig"], ["151390", "Overig"], ["151726", "Overig"], ["152086", "Overig"], ["152098", "Configurator"], ["152229", "Configurator"], ["152416", "Configurator"], ["152510", "Configurator"], ["152545", "Configurator"], ["152576", "Configurator"], ["152623", "Configurator"], ["152674", "Overig"], ["152736", "Configurator"], ["152737", "Configurator"], ["152765", "Contact NL"], ["152778", "Configurator"], ["152787", "Overig"], ["152799", "Overig"]]}];
+const NB_WEEKLY        = [{"label": "W05-26", "total": 105, "nagebeld": 96, "pct": 91.4, "missed": [["135320", "Overig"], ["135504", "Overig"], ["135779", "Overig"], ["135854", "Overig"], ["135899", "Overig"], ["135920", "Overig"], ["136105", "Overig"], ["136114", "Overig"], ["136128", "Overig"]]}, {"label": "W06-26", "total": 71, "nagebeld": 62, "pct": 87.3, "missed": [["136205", "Overig"], ["136272", "Overig"], ["136376", "Overig"], ["136378", "Overig"], ["136669", "Overig"], ["136722", "Overig"], ["136763", "Overig"], ["136941", "Overig"], ["136970", "Overig"]]}, {"label": "W07-26", "total": 62, "nagebeld": 52, "pct": 83.9, "missed": [["137004", "Overig"], ["137037", "Overig"], ["137089", "Overig"], ["137190", "Overig"], ["137250", "Overig"], ["137271", "Overig"], ["137427", "Overig"], ["137708", "Overig"], ["137880", "Overig"], ["137891", "Overig"]]}, {"label": "W08-26", "total": 58, "nagebeld": 47, "pct": 81.0, "missed": [["138373", "Overig"], ["138426", "Overig"], ["138607", "Overig"], ["138612", "Overig"], ["138626", "Overig"], ["138710", "Overig"], ["108187", "Overig"], ["138981", "Overig"], ["139167", "Overig"], ["139244", "Overig"], ["139486", "Overig"]]}, {"label": "W09-26", "total": 35, "nagebeld": 25, "pct": 71.4, "missed": [["139866", "Overig"], ["140018", "Overig"], ["140019", "Overig"], ["140161", "Overig"], ["140236", "Overig"], ["140519", "Overig"], ["140625", "Overig"], ["141251", "Overig"], ["141493", "Overig"], ["141529", "Overig"]]}, {"label": "W10-26", "total": 43, "nagebeld": 35, "pct": 81.4, "missed": [["141761", "Overig"], ["141854", "Overig"], ["141881", "Overig"], ["142310", "Configurator"], ["142608", "Overig"], ["142616", "Overig"], ["142789", "Overig"], ["142795", "Overig"]]}, {"label": "W11-26", "total": 53, "nagebeld": 41, "pct": 77.4, "missed": [["143571", "Overig"], ["143671", "Overig"], ["143745", "Overig"], ["143808", "Overig"], ["143889", "Overig"], ["143902", "Overig"], ["144144", "Overig"], ["144218", "Overig"], ["144345", "Configurator"], ["144365", "Overig"], ["144437", "Overig"], ["144485", "Overig"]]}, {"label": "W12-26", "total": 45, "nagebeld": 39, "pct": 86.7, "missed": [["145010", "Overig"], ["145062", "Overig"], ["145213", "Overig"], ["145217", "Overig"], ["145264", "Overig"]]}, {"label": "W13-26", "total": 43, "nagebeld": 33, "pct": 76.7, "missed": [["146487", "Overig"], ["146634", "Overig"], ["147206", "Overig"], ["147214", "Overig"], ["147349", "Overig"], ["147405", "Configurator"], ["147431", "Overig"], ["147513", "Overig"], ["147544", "Overig"]]}, {"label": "W14-26", "total": 50, "nagebeld": 43, "pct": 86.0, "missed": [["147712", "Overig"], ["147981", "Overig"], ["148554", "Overig"], ["148805", "Overig"], ["148808", "Overig"], ["148857", "Overig"]]}, {"label": "W15-26", "total": 52, "nagebeld": 42, "pct": 80.8, "missed": [["149411", "Overig"], ["149522", "Overig"], ["149785", "Overig"], ["149843", "Overig"], ["149849", "Overig"], ["150227", "Overig"], ["150322", "Overig"], ["150351", "Configurator"], ["150514", "Contact NL"], ["150610", "Overig"]]}, {"label": "W16-26", "total": 34, "nagebeld": 30, "pct": 88.2, "missed": [["151418", "Overig"], ["144981", "Overig"], ["145064", "Overig"], ["145286", "Overig"]]}, {"label": "W17-26", "total": 47, "nagebeld": 37, "pct": 78.7, "missed": [["145618", "Overig"], ["145664", "Overig"], ["145732", "Overig"], ["145735", "Overig"], ["145851", "Overig"], ["145997", "Overig"], ["146207", "Overig"], ["146471", "Overig"], ["146789", "Overig"]]}, {"label": "W18-26", "total": 28, "nagebeld": 23, "pct": 82.1, "missed": [["147012", "Overig"], ["147028", "Overig"], ["147060", "Overig"], ["147403", "Overig"], ["147478", "Overig"]]}, {"label": "W19-26", "total": 35, "nagebeld": 25, "pct": 71.4, "missed": [["147627", "Overig"], ["147630", "Overig"], ["147644", "Overig"], ["147823", "Overig"], ["147876", "Overig"], ["147894", "Overig"], ["147901", "Overig"], ["147981", "Overig"], ["147982", "Overig"], ["148113", "Overig"]]}, {"label": "W20-26", "total": 37, "nagebeld": 31, "pct": 83.8, "missed": [["148150", "Overig"], ["148202", "Overig"], ["148330", "Overig"], ["148409", "Overig"]]}, {"label": "W21-26", "total": 38, "nagebeld": 29, "pct": 76.3, "missed": [["149052", "Overig"], ["149350", "Overig"], ["149209", "Overig"], ["149222", "Overig"], ["149286", "Overig"], ["149404", "Overig"], ["149511", "Overig"]]}, {"label": "W22-26", "total": 38, "nagebeld": 33, "pct": 86.8, "missed": [["149787", "Overig"], ["149925", "Overig"], ["149943", "Overig"], ["149955", "Overig"], ["149964", "Overig"]]}, {"label": "W23-26", "total": 45, "nagebeld": 40, "pct": 88.9, "missed": [["150132", "Overig"], ["150517", "Overig"], ["150621", "Overig"], ["150665", "Overig"], ["150666", "Overig"]]}, {"label": "W24-26", "total": 38, "nagebeld": 21, "pct": 55.3, "missed": [["151390", "Overig"], ["151726", "Overig"], ["152086", "Overig"], ["152098", "Configurator"], ["152229", "Configurator"], ["152416", "Configurator"], ["152510", "Configurator"], ["152545", "Configurator"], ["152576", "Configurator"], ["152623", "Configurator"], ["152674", "Overig"], ["152736", "Configurator"], ["152737", "Configurator"], ["152765", "Contact NL"], ["152778", "Configurator"], ["152787", "Overig"], ["152799", "Overig"]]}];
+const SPD_KANAAL_MONTH = [{"kanaal": "Telefoon", "total": 7, "pct_zelfde": 100.0, "pct_dag1": 0.0, "pct_binnen1": 100.0}, {"kanaal": "Mail", "total": 9, "pct_zelfde": 77.8, "pct_dag1": 22.2, "pct_binnen1": 100.0}, {"kanaal": "Configurator", "total": 35, "pct_zelfde": 2.9, "pct_dag1": 51.4, "pct_binnen1": 54.3}, {"kanaal": "Contact NL", "total": 19, "pct_zelfde": 26.3, "pct_dag1": 10.5, "pct_binnen1": 36.8}, {"kanaal": "Overig", "total": 13, "pct_zelfde": 0.0, "pct_dag1": 0.0, "pct_binnen1": 0.0}];
+const SPD_KANAAL_WEEK  = [{"kanaal": "Telefoon", "total": 4, "pct_zelfde": 100.0, "pct_dag1": 0.0, "pct_binnen1": 100.0}, {"kanaal": "Mail", "total": 4, "pct_zelfde": 100.0, "pct_dag1": 0.0, "pct_binnen1": 100.0}, {"kanaal": "Contact NL", "total": 8, "pct_zelfde": 25.0, "pct_dag1": 12.5, "pct_binnen1": 37.5}, {"kanaal": "Configurator", "total": 16, "pct_zelfde": 0.0, "pct_dag1": 25.0, "pct_binnen1": 25.0}, {"kanaal": "Overig", "total": 6, "pct_zelfde": 0.0, "pct_dag1": 0.0, "pct_binnen1": 0.0}];
+const TREND_MONTHLY    = [{"label": "jul-24", "cfg": 63.9, "cnl": 51.1}, {"label": "aug-24", "cfg": 3.5, "cnl": 19.4}, {"label": "sep-24", "cfg": 8.9, "cnl": 55.6}, {"label": "oct-24", "cfg": 20.8, "cnl": 54.7}, {"label": "nov-24", "cfg": 12.7, "cnl": 47.7}, {"label": "dec-24", "cfg": 8.1, "cnl": 38.7}, {"label": "jan-25", "cfg": 15.8, "cnl": 44.3}, {"label": "feb-25", "cfg": 12.7, "cnl": 62.3}, {"label": "mar-25", "cfg": 5.2, "cnl": 58.3}, {"label": "apr-25", "cfg": 6.7, "cnl": 35.7}, {"label": "may-25", "cfg": 11.6, "cnl": 33.3}, {"label": "jun-25", "cfg": 18.5, "cnl": 52.0}, {"label": "jul-25", "cfg": 26.2, "cnl": 50.0}, {"label": "aug-25", "cfg": 29.7, "cnl": 24.3}, {"label": "sep-25", "cfg": 51.4, "cnl": 46.5}, {"label": "oct-25", "cfg": 54.8, "cnl": 57.1}, {"label": "nov-25", "cfg": 21.5, "cnl": 50.0}, {"label": "dec-25", "cfg": 8.5, "cnl": 42.9}, {"label": "jan-26", "cfg": 11.2, "cnl": 37.8}, {"label": "feb-26", "cfg": 46.2, "cnl": 27.0}, {"label": "mar-26", "cfg": 70.6, "cnl": 50.0}, {"label": "apr-26", "cfg": 54.0, "cnl": 44.8}, {"label": "may-26", "cfg": 45.5, "cnl": 44.8}, {"label": "jun-26", "cfg": 54.3, "cnl": 36.8}];
+const TREND_WEEKLY     = [{"label": "W05-26", "cfg": 4.5, "cnl": 46.7}, {"label": "W06-26", "cfg": 20.8, "cnl": 44.4}, {"label": "W07-26", "cfg": 45.8, "cnl": 8.3}, {"label": "W08-26", "cfg": 71.4, "cnl": 33.3}, {"label": "W09-26", "cfg": 50.0, "cnl": 33.3}, {"label": "W10-26", "cfg": 83.3, "cnl": 63.6}, {"label": "W11-26", "cfg": 52.0, "cnl": 50.0}, {"label": "W12-26", "cfg": 71.4, "cnl": 50.0}, {"label": "W13-26", "cfg": 80.0, "cnl": 50.0}, {"label": "W14-26", "cfg": 75.0, "cnl": 38.5}, {"label": "W15-26", "cfg": 34.8, "cnl": 50.0}, {"label": "W16-26", "cfg": 73.7, "cnl": 66.7}, {"label": "W17-26", "cfg": 47.4, "cnl": null}, {"label": "W18-26", "cfg": 29.4, "cnl": null}, {"label": "W19-26", "cfg": 20.0, "cnl": 42.9}, {"label": "W20-26", "cfg": 37.5, "cnl": 40.0}, {"label": "W21-26", "cfg": 53.8, "cnl": 50.0}, {"label": "W22-26", "cfg": 71.4, "cnl": 33.3}, {"label": "W23-26", "cfg": 78.9, "cnl": 36.4}, {"label": "W24-26", "cfg": 25.0, "cnl": 37.5}];
+const CUR_LABELS       = { month: 'jun 2026', week: 'W24-26' };
 
-function extract(data, key) { return data.map(r => r[key]); }
+let cDays, cAttempts, cSpeedK, cSpeedT, cNb;
+const TC = 'rgba(0,0,0,0.45)', GC = 'rgba(0,0,0,0.06)';
+function ex(data, key) { return data.map(r => r[key]); }
 
-let chartDays, chartAttempts;
-
-function buildCharts(data) {
-  if (chartDays)    chartDays.destroy();
-  if (chartAttempts) chartAttempts.destroy();
-
-  const labels = extract(data, 'label');
-
-  chartDays = new Chart(document.getElementById('avgDaysChart'), {
+// ── Chart 1: Gem. dagen ────────────────────────────────────────────────────
+function buildAvgDays(data) {
+  if (cDays) cDays.destroy();
+  cDays = new Chart(document.getElementById('avgDaysChart'), {
     type: 'line',
-    data: {
-      labels,
-      datasets: [{
-        label: 'Gem. dagen',
-        data: extract(data, 'avg_days'),
-        borderColor: '#F26522', backgroundColor: '#F2652218',
-        fill: true, tension: 0.3,
-        pointRadius: data.length <= 30 ? 4 : 2, pointHoverRadius: 6
-      }]
-    },
+    data: { labels: ex(data,'label'), datasets: [{
+      label: 'Gem. dagen', data: ex(data,'avg_days'),
+      borderColor:'#F26522', backgroundColor:'#F2652218', fill:true, tension:0.3,
+      pointRadius: data.length<=25?4:2, pointHoverRadius:6
+    }] },
     options: {
-      responsive: true,
-      plugins: { legend: { display: false }, tooltip: { callbacks: { label: c => ` ${c.parsed.y} dagen` } } },
-      maintainAspectRatio: false,
-      scales: { x: { ticks: { callback: function(val, i) { return i % 2 === 0 ? this.getLabelForValue(val) : ''; }, maxRotation: 45, minRotation: 45 } }, y: { beginAtZero: true, title: { display: true, text: 'Dagen' } } }
-    }
-  });
-
-  chartAttempts = new Chart(document.getElementById('attemptsChart'), {
-    type: 'bar',
-    data: {
-      labels,
-      datasets: [
-        { label: '1e poging',    data: extract(data,'p1'), backgroundColor: '#F26522', stack:'s' },
-        { label: '2e poging',    data: extract(data,'p2'), backgroundColor: '#F2652277', stack:'s' },
-        { label: '3e poging',    data: extract(data,'p3'), backgroundColor: '#F2652244', stack:'s' },
-        { label: 'Niet bereikt', data: extract(data,'pn'), backgroundColor: '#cccccccc', stack:'s' },
-      ]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: {
-        legend: { display: true, position: 'top' },
-        tooltip: { callbacks: { label: c => ` ${c.dataset.label}: ${c.parsed.y}%` } }
-      },
-      scales: {
-        x: { stacked: true, ticks: { callback: function(val, i) { return i % 2 === 0 ? this.getLabelForValue(val) : ''; }, maxRotation: 45, minRotation: 45 } },
-        y: { stacked: true, max: 100, ticks: { callback: v => v + '%' } }
+      responsive:true, maintainAspectRatio:false,
+      plugins:{ legend:{display:false}, tooltip:{callbacks:{label: c=>` ${c.parsed.y} dagen`}} },
+      scales:{
+        x:{ ticks:{callback:function(v,i){return i%2===0?this.getLabelForValue(v):''},maxRotation:45,minRotation:45,color:TC},grid:{color:GC} },
+        y:{ beginAtZero:true, title:{display:true,text:'Dagen',color:TC}, ticks:{color:TC} }
       }
     }
   });
 }
 
+// ── Chart 2: Contactresultaat ──────────────────────────────────────────────
+function buildAttempts(data) {
+  if (cAttempts) cAttempts.destroy();
+  cAttempts = new Chart(document.getElementById('attemptsChart'), {
+    type: 'bar',
+    data: { labels: ex(data,'label'), datasets: [
+      {label:'1e poging',    data:ex(data,'p1'), backgroundColor:'#F26522',   stack:'s'},
+      {label:'2e poging',    data:ex(data,'p2'), backgroundColor:'#F2652277', stack:'s'},
+      {label:'3e poging',    data:ex(data,'p3'), backgroundColor:'#F2652244', stack:'s'},
+      {label:'Niet bereikt', data:ex(data,'pn'), backgroundColor:'#cccccccc', stack:'s'},
+    ] },
+    options: {
+      responsive:true, maintainAspectRatio:false,
+      plugins:{ legend:{display:true,position:'top',labels:{font:{size:11}}}, tooltip:{callbacks:{label:c=>` ${c.dataset.label}: ${c.parsed.y}%`}} },
+      scales:{
+        x:{ stacked:true, ticks:{callback:function(v,i){return i%2===0?this.getLabelForValue(v):''},maxRotation:45,minRotation:45,color:TC},grid:{color:GC} },
+        y:{ stacked:true, max:100, ticks:{callback:v=>v+'%',color:TC} }
+      }
+    }
+  });
+}
+
+// ── Chart 3: Speed per kanaal (huidig periode) ─────────────────────────────
+function buildSpeedKanaal(data, periodLabel) {
+  if (cSpeedK) cSpeedK.destroy();
+  document.getElementById('speedKanaalPeriod').textContent = periodLabel;
+
+  const nPlugin = { id:'nLbls', afterDraw(chart) {
+    const ctx = chart.ctx, yA = chart.scales.y, xA = chart.scales.x;
+    data.forEach((item,i) => {
+      ctx.save();
+      ctx.font = '11px -apple-system,sans-serif';
+      ctx.fillStyle = '#bbb'; ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
+      ctx.fillText('n='+item.total, xA.getPixelForValue(100)+6, yA.getPixelForTick(i));
+      ctx.restore();
+    });
+  } };
+
+  const pctPlugin = { id:'pctLbls', afterDraw(chart) {
+    const ctx = chart.ctx, yA = chart.scales.y;
+    data.forEach((item,i) => {
+      const xVal = chart.scales.x.getPixelForValue(item.pct_binnen1);
+      ctx.save();
+      ctx.font = '600 11px -apple-system,sans-serif';
+      ctx.fillStyle = '#F26522'; ctx.textAlign = 'right'; ctx.textBaseline = 'middle';
+      ctx.fillText(item.pct_binnen1+'%', xVal-4, yA.getPixelForTick(i));
+      ctx.restore();
+    });
+  } };
+
+  cSpeedK = new Chart(document.getElementById('speedKanaalChart'), {
+    type: 'bar',
+    data: { labels: data.map(r=>r.kanaal), datasets: [
+      {label:'Zelfde dag', data:data.map(r=>r.pct_zelfde), backgroundColor:'#F26522', stack:'s'},
+      {label:'Dag 1',      data:data.map(r=>r.pct_dag1),   backgroundColor:'#F4956A', stack:'s'},
+      {label:'Later',      data:data.map(r=>Math.max(0,100-r.pct_zelfde-r.pct_dag1)), backgroundColor:'#ebebeb', stack:'s'},
+    ] },
+    plugins: [nPlugin, pctPlugin],
+    options: {
+      indexAxis:'y', responsive:true, maintainAspectRatio:false,
+      layout:{ padding:{right:60} },
+      plugins:{
+        legend:{display:true,position:'top',labels:{font:{size:11},filter:i=>i.text!=='Later'}},
+        tooltip:{callbacks:{label:c=>c.dataset.label==='Later'?null:` ${c.dataset.label}: ${c.parsed.x}%`}}
+      },
+      scales:{
+        x:{ stacked:true, max:100, ticks:{callback:v=>v+'%',color:TC}, grid:{color:GC} },
+        y:{ stacked:true, ticks:{color:TC} }
+      }
+    }
+  });
+}
+
+// ── Chart 4: Speed trend ───────────────────────────────────────────────────
+function buildSpeedTrend(data) {
+  if (cSpeedT) cSpeedT.destroy();
+  cSpeedT = new Chart(document.getElementById('speedTrendChart'), {
+    type: 'line',
+    data: { labels: ex(data,'label'), datasets: [
+      {label:'Configurator', data:ex(data,'cfg'), borderColor:'#F26522', backgroundColor:'#F2652218', fill:true, tension:0.3, spanGaps:false, pointRadius:data.length<=25?4:2, pointHoverRadius:6},
+      {label:'Contact NL',   data:ex(data,'cnl'), borderColor:'#F4956A', backgroundColor:'transparent', borderDash:[5,4], tension:0.3, spanGaps:false, pointRadius:data.length<=25?3:2, pointHoverRadius:5},
+    ] },
+    options: {
+      responsive:true, maintainAspectRatio:false,
+      plugins:{ legend:{display:false}, tooltip:{callbacks:{label:c=>` ${c.dataset.label}: ${c.parsed.y}%`}} },
+      scales:{
+        x:{ ticks:{callback:function(v,i){return i%2===0?this.getLabelForValue(v):''},maxRotation:45,minRotation:45,color:TC},grid:{color:GC} },
+        y:{ min:0, max:100, ticks:{callback:v=>v+'%',color:TC}, grid:{color:GC} }
+      }
+    }
+  });
+}
+
+// ── Chart 5: % Nagebeld ────────────────────────────────────────────────────
+function buildNagebeld(data) {
+  if (cNb) cNb.destroy();
+
+  const pctPlugin = { id:'pctNb', afterDraw(chart) {
+    const ctx = chart.ctx, meta = chart.getDatasetMeta(0), yA = chart.scales.yPct;
+    meta.data.forEach((bar,i) => {
+      ctx.save();
+      ctx.font = '500 9px -apple-system,sans-serif';
+      ctx.fillStyle = 'rgba(255,255,255,0.92)';
+      ctx.textAlign = 'center'; ctx.textBaseline = 'bottom';
+      ctx.fillText(Math.round(data[i].pct)+'%', bar.x, yA.getPixelForValue(80)-8);
+      ctx.restore();
+    });
+  } };
+
+  cNb = new Chart(document.getElementById('nagebeldChart'), {
+    type: 'bar',
+    data: { labels: data.map(r=>r.label), datasets: [
+      {label:'Nagebeld',       data:data.map(r=>r.pct),       backgroundColor:'#F26522', stack:'s', yAxisID:'yPct', order:2, borderRadius:0},
+      {label:'Gemist',         data:data.map(r=>100-r.pct),   backgroundColor:'#E24B4A', stack:'s', yAxisID:'yPct', order:2, borderRadius:3},
+      {label:'Leads in scope', data:data.map(r=>r.total),     type:'line', borderColor:'rgba(0,0,0,0.35)', backgroundColor:'transparent', borderWidth:1.5, pointRadius:3, pointBackgroundColor:'rgba(0,0,0,0.35)', tension:0.2, yAxisID:'yAbs', order:1},
+    ] },
+    plugins: [pctPlugin],
+    options: {
+      responsive:true, maintainAspectRatio:false,
+      onClick: (e,els) => {
+        if (!els.length) return;
+        const d = data[els[0].index];
+        showMissed(d.label, d.missed||[]);
+      },
+      plugins:{
+        legend:{display:false},
+        tooltip:{callbacks:{label: c => {
+          if (c.dataset.label==='Nagebeld') return ` ${c.parsed.y.toFixed(1)}% nagebeld`;
+          if (c.dataset.label==='Gemist' && c.parsed.y>0) return ` ${c.parsed.y.toFixed(1)}% gemist`;
+          if (c.dataset.label==='Leads in scope') return ` ${c.parsed.y} leads in scope`;
+          return null;
+        }}}
+      },
+      scales:{
+        x:{ stacked:true, ticks:{callback:function(v,i){return i%2===0?this.getLabelForValue(v):''},maxRotation:45,minRotation:45,color:TC},grid:{color:GC} },
+        yPct:{ stacked:true, position:'left',  min:80, max:100, ticks:{callback:v=>v+'%',color:TC,stepSize:5}, grid:{color:GC}, title:{display:true,text:'% nagebeld',color:TC,font:{size:10}} },
+        yAbs:{ position:'right', beginAtZero:true, ticks:{color:TC}, grid:{display:false}, title:{display:true,text:'Leads in scope',color:TC,font:{size:10}} }
+      }
+    }
+  });
+}
+
+function showMissed(label, missed) {
+  const p = document.getElementById('missedPanel');
+  if (!missed.length) {
+    p.innerHTML = `<p class="ptitle">${label}</p><p class="hint">Geen gemiste leads — 100% nagebeld.</p>`;
+    return;
+  }
+  const chips = missed.map(([id,k])=>`<span class="chip">#${id}<span class="k">${k}</span></span>`).join('');
+  p.innerHTML = `<p class="ptitle">${label} — ${missed.length} gemiste lead${missed.length>1?'s':''}</p><div class="missed-chips">${chips}</div>`;
+}
+
+// ── Toggle ─────────────────────────────────────────────────────────────────
 function setView(v) {
   document.getElementById('btnMonth').classList.toggle('active', v==='month');
   document.getElementById('btnWeek').classList.toggle('active',  v==='week');
-  buildCharts(v === 'month' ? MONTHLY : WEEKLY);
+  const m = v === 'month';
+  buildAvgDays   (m ? MONTHLY       : WEEKLY);
+  buildAttempts  (m ? MONTHLY       : WEEKLY);
+  buildSpeedKanaal(m ? SPD_KANAAL_MONTH : SPD_KANAAL_WEEK, CUR_LABELS[v]);
+  buildSpeedTrend(m ? TREND_MONTHLY : TREND_WEEKLY);
+  buildNagebeld  (m ? NB_MONTHLY    : NB_WEEKLY);
+  document.getElementById('missedPanel').innerHTML = '<p class="hint">Klik op een balk om te zien welke leads zijn gemist in die periode.</p>';
 }
 
-buildCharts(MONTHLY);
+setView('month');
 </script>
 </body>
 </html>
